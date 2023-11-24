@@ -31,6 +31,11 @@ declare interface BlockComponent {
 	scale: number;
 }
 
+declare interface BlockCategory {
+	name: string;
+	category_name: string;
+}
+
 declare interface PageMap {
 	[key: string]: Page;
 }
@@ -65,7 +70,7 @@ declare type HashString = `#${string}`;
 
 declare type RGBString = `rgb(${number}, ${number}, ${number})`;
 
-declare type LeftSidebarTabOption = "Components" | "Layers";
+declare type LeftSidebarTabOption = "Categories" | "Layers";
 declare type RightSidebarTabOption = "Properties" | "Data" | "Settings";
 
 declare type BuilderMode = "select" | "text" | "container" | "image" | "html";

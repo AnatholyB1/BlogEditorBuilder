@@ -22,7 +22,7 @@
 			@resize="(width) => (store.builderLayout.leftPanelWidth = width)" />
 		<div class="flex w-full border-gray-200 p-[2px] text-sm dark:border-zinc-800">
 			<button
-				v-for="tab of ['Layers', 'Components']"
+				v-for="tab of ['Layers', 'Categories']"
 				:key="tab"
 				class="mx-3 flex-1 p-2"
 				@click.stop="setActiveTab(tab as LeftSidebarTabOption)"
@@ -34,8 +34,8 @@
 				{{ tab }}
 			</button>
 		</div>
-		<div v-show="store.leftPanelActiveTab === 'Components'">
-			<BuilderComponents class="p-4 pt-3" />
+		<div class="h-full" v-show="store.leftPanelActiveTab === 'Categories'">
+			<BuilderCategory class="p-4 pt-3" />
 		</div>
 		<div v-show="store.leftPanelActiveTab === 'Layers'">
 			<BlockLayers
@@ -56,14 +56,12 @@ import { createResource } from "frappe-ui";
 import { Ref, ref } from "vue";
 import useStore from "../store";
 import BlockLayers from "./BlockLayers.vue";
-import BuilderComponents from "./BuilderComponents.vue";
+import BuilderCategory from "./BuilderCategory.vue";
 import PanelResizer from "./PanelResizer.vue";
 
 import { useRouter } from "vue-router";
 
 const prompt = ref(null) as unknown as Ref<string>;
-const router = useRouter();
-
 const store = useStore();
 const generating = ref(false);
 

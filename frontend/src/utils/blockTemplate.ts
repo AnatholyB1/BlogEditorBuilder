@@ -1,7 +1,22 @@
 function getBlockTemplate(
-	type: "html" | "text" | "image" | "container" | "body" | "fit-container" | "fallback-component"
+	type: "html" | "text" | "image" | "container" | "body" | "fit-container" | "fallback-component" | "section"
 ): BlockOptions {
 	switch (type) {
+		case "section":
+			{
+				return {
+					name: "Section",
+					element: "section",
+					attributes: {} as BlockAttributeMap,
+					baseStyles: {
+						display: "flex",
+						flexDirection: "column",
+						height: "100vh",
+						width: "100%",
+						alignItems: "center",
+					} as BlockStyleMap,
+				};
+			}
 		case "html":
 			return {
 				name: "HTML",
@@ -19,6 +34,7 @@ function getBlockTemplate(
 				element: "p",
 				innerHTML: "Text",
 				baseStyles: {
+					position: "absolute",
 					fontSize: "30px",
 					width: "fit-content",
 					height: "fit-content",
@@ -28,18 +44,22 @@ function getBlockTemplate(
 			};
 		case "image":
 			return {
+				
 				name: "Image",
 				element: "img",
 				baseStyles: {
+					position: "absolute",
 					objectFit: "cover",
 				} as BlockStyleMap,
 			};
 		case "container":
 			return {
+				
 				name: "Container",
 				element: "div",
 				blockName: "container",
 				baseStyles: {
+					position: "absolute",
 					display: "flex",
 					flexDirection: "column",
 				} as BlockStyleMap,
@@ -64,9 +84,11 @@ function getBlockTemplate(
 		case "fit-container":
 			return {
 				name: "Container",
+
 				element: "div",
 				blockName: "container",
 				baseStyles: {
+					position: "absolute",
 					display: "flex",
 					flexDirection: "column",
 					height: "fit-content",
@@ -76,10 +98,12 @@ function getBlockTemplate(
 		case "fallback-component":
 			return {
 				name: "HTML",
+
 				element: "p",
 				originalElement: "__raw_html__",
 				innerHTML: `<div style="color: red;background: #f4f4f4;display:flex;flex-direction:column;position:static;top:auto;left:auto;width: 600px;height: 275px;align-items:center;font-size: 30px;justify-content:center"><p>Component missing</p></div>`,
 				baseStyles: {
+					position: "absolute",
 					height: "fit-content",
 					width: "fit-content",
 				} as BlockStyleMap,

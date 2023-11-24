@@ -285,6 +285,9 @@ class Block implements BlockOptions {
 	isRoot() {
 		return this.originalElement === "body";
 	}
+	isSection() {
+		return this.getElement() === "section";
+	}
 	getTag(): string {
 		if (this.isButton()) {
 			return "div";

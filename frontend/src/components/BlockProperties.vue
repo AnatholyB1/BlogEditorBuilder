@@ -2,7 +2,8 @@
 <template>
 	<div v-if="blockController.isBLockSelected()" class="mt-[-10px] flex select-none flex-col gap-3 pb-16">
 		<CollapsibleSection sectionName="Layout" v-if="!blockController.multipleBlocksSelected()">
-			<BLockLayoutHandler></BLockLayoutHandler>
+			<BLockLayoutHandler>
+			</BLockLayoutHandler>
 		</CollapsibleSection>
 		<CollapsibleSection sectionName="Style">
 			<ColorInput
@@ -318,6 +319,7 @@ const setFont = (font: string) => {
 	});
 };
 
+
 const getClasses = () => {
 	return blockController.getClasses().join(", ");
 };
@@ -326,4 +328,5 @@ const setClasses = (val: string) => {
 	const classes = val.split(",").map((c) => c.trim());
 	blockController.setClasses(classes);
 };
+
 </script>

@@ -16,6 +16,9 @@ const blockController = {
 	isRoot() {
 		return blockController.isBLockSelected() && store.selectedBlocks[0].isRoot();
 	},
+	isSection() {
+		return blockController.isBLockSelected() && store.selectedBlocks[0].isSection();
+	},
 	setStyle: (style: styleProperty, value: StyleValue) => {
 		store.selectedBlocks.forEach((block) => {
 			block.setStyle(style, value);

@@ -50,6 +50,7 @@
 					v-if="showBlocks"
 					:breakpoint="breakpoint.device"
 					:data="store.pageData" />
+
 			</div>
 		</div>
 		<div
@@ -102,6 +103,8 @@ const props = defineProps({
 
 provide("canvasProps", props.canvasProps);
 
+
+
 onMounted(() => {
 	props.canvasProps.overlayElement = overlay.value;
 	setEvents();
@@ -147,6 +150,8 @@ const visibleBreakpoints = computed(() => {
 		(breakpoint) => breakpoint.visible || breakpoint.device === "desktop"
 	);
 });
+
+
 
 function setEvents() {
 	const container = document.body.querySelector(".canvas-container") as HTMLElement;

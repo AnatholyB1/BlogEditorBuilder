@@ -35,7 +35,7 @@ const useStore = defineStore("store", {
 		autoSave: true,
 		builderLayout: {
 			rightPanelWidth: 275,
-			leftPanelWidth: 280,
+			leftPanelWidth: 350,
 			scriptEditorHeight: 400,
 		},
 		flow: [
@@ -188,9 +188,9 @@ const useStore = defineStore("store", {
 				visible: false,
 			},
 		],
-		leftPanelActiveTab: <LeftSidebarTabOption>"Layers",
+		leftPanelActiveTab: <LeftSidebarTabOption>"Categories",
 		rightPanelActiveTab: <RightSidebarTabOption>"Properties",
-		showRightPanel: <boolean>true,
+		showRightPanel: <boolean>false,
 		showLeftPanel: <boolean>true,
 		blockEditorCanvas: {
 			scale: 0.5,
@@ -237,6 +237,13 @@ const useStore = defineStore("store", {
 					parent.children.push(this.getBlockInstance(block));
 				}
 			}
+		},
+		newBlockSection(block : Block) {
+			const newblock = this.getBlockInstance(getBlockTemplate("section"));
+			const parent = this.builderState.blocks[0];
+			const currentIndex = parent.children.indexOf(block);
+			parent.children.splice(currentIndex + 1, 0, newblock);
+			this.selectBlock(newblock, null);
 		},
 		getFirstBlock() {
 			return this.editingComponent

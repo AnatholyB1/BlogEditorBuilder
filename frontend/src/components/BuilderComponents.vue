@@ -54,6 +54,8 @@ import BuilderBlock from "./BuilderBlock.vue";
 const store = useStore();
 const filter = ref("");
 
+
+
 const components = computed(() =>
 	(webComponent.data || []).filter((d: BuilderComponent) => {
 		if (d.for_web_page && d.for_web_page !== store.getActivePage?.name) {
@@ -99,3 +101,6 @@ const setData = (ev: DragEvent, component: BlockComponent) => {
 	ev?.dataTransfer?.setData("componentName", component.name);
 };
 </script>
+
+
+

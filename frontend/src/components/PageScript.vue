@@ -53,6 +53,7 @@ const props = defineProps({
 	},
 });
 
+
 const save = (type: "client_script" | "style", value: string) => {
 	if (!props.page) return;
 	webPages.setValue
