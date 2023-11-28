@@ -66,7 +66,6 @@ const selectedComponents = ref<string[]>([]);
 
 const components = computed(() =>
 	(webComponent.data || []).filter((d: BuilderComponent) => {
-        console.log(selectedComponents.value.includes(d.component_name!))
 		if (selectedComponents.value.includes(d.component_name!)) {
 			return d.component_name?.toLowerCase().includes(filter.value.toLowerCase());
 		} else {

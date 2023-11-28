@@ -23,6 +23,7 @@ export interface BuilderPage {
 	draft_blocks?: any;
 	/**	Page Preview : Attach Image	*/
 	preview?: string;
+	canvas_position?: string;
 	/**	Page Data Script : Code - data.events = frappe.get_list("Event")
 <br>
 <b>Note:</b> Each key value of data should be a list.	*/

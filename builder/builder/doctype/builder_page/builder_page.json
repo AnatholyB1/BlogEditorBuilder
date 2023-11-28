@@ -27,7 +27,8 @@
   "page_title",
   "meta_description",
   "meta_image",
-  "set_meta_tags"
+  "set_meta_tags",
+  "canvas_position"
  ],
  "fields": [
   {
@@ -136,11 +137,16 @@
    "fieldtype": "Code",
    "label": "Style",
    "options": "CSS"
+  },
+  {
+   "fieldname": "canvas_position",
+   "fieldtype": "JSON",
+   "label": "Canvas position"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-11-05 20:52:56.527331",
+ "modified": "2023-11-27 17:19:01.890249",
  "modified_by": "Administrator",
  "module": "Builder",
  "name": "Builder Page",

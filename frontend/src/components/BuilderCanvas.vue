@@ -1,3 +1,4 @@
+
 <template>
 	<div ref="canvasContainer" @click="handleClick">
 		<div class="overlay absolute" id="overlay" ref="overlay" />
@@ -6,7 +7,7 @@
 			v-if="isOverDropZone"
 			class="pointer-events-none absolute bottom-0 left-0 right-0 top-0 z-30 bg-cyan-300 opacity-20"></div>
 		<div
-			class="fixed flex gap-40"
+			class=" fixed flex gap-40"
 			ref="canvas"
 			:style="{
 				transform: `scale(${canvasProps.scale}) translate(${canvasProps.translateX}px, ${canvasProps.translateY}px)`,
@@ -28,16 +29,19 @@
 				</div>
 			</div>
 			<div
+			    v-if="pages.length > 0"
 				class="canvas relative flex h-full rounded-md bg-white shadow-2xl"
 				:style="{
 					...canvasStyles,
 					background: canvasProps.background,
 					width: `${breakpoint.width}px`,
+					transform: `translate(${divs.find(element => element.id.value == breakpoint.device)?.ofsetFinalX.value}px, ${divs.find(element => element.id.value == breakpoint.device)?.ofsetFinalY.value}px)`,
 				}"
 				v-for="breakpoint in visibleBreakpoints"
+				:id="breakpoint.device"
 				:key="breakpoint.device">
 				<div
-					class="absolute left-0 select-none text-3xl text-gray-700 dark:text-zinc-300"
+					class="absolute left-0 select-none text-3xl text-gray-700 dark:text-zinc-300 translate-x-[] translate-y-[]"
 					:style="{
 						fontSize: `calc(${12}px * 1/${canvasProps.scale})`,
 						top: `calc(${-20}px * 1/${canvasProps.scale})`,
@@ -68,23 +72,181 @@
 	</div>
 </template>
 <script setup lang="ts">
+
+
 import webComponent from "@/data/webComponent";
 import Block from "@/utils/block";
 import getBlockTemplate from "@/utils/blockTemplate";
 import { addPxToNumber, getNumberFromPx } from "@/utils/helpers";
 import { clamp, useDropZone, useElementBounding, useEventListener } from "@vueuse/core";
 import { FeatherIcon } from "frappe-ui";
-import { PropType, computed, nextTick, onMounted, provide, reactive, ref, watchEffect } from "vue";
+import {  PropType, computed, nextTick, onActivated, onMounted , provide, reactive, ref, watch, watchEffect } from "vue";
 import useStore from "../store";
 import setPanAndZoom from "../utils/panAndZoom";
 import BlockSnapGuides from "./BlockSnapGuides.vue";
 import BuilderBlock from "./BuilderBlock.vue";
+import {Ref} from 'vue';
+import { webPages } from "@/data/webPage";
+import { BuilderPage } from "@/types/Builder/BuilderPage";
 
 const store = useStore();
 const canvasContainer = ref(null);
-const canvas = ref(null);
+const canvas = ref<HTMLElement>(null as unknown as HTMLElement);
 const showBlocks = ref(false);
 const overlay = ref(null);
+
+const urlPath = window.location.pathname;
+const id = urlPath.substring(urlPath.lastIndexOf('/') + 1);
+
+
+const current = ref(0);
+const dragging = ref(false);
+type Divs = {
+	idx : Ref<number>,
+	id : Ref<string>,
+	div : Ref<HTMLElement>,
+	initialX : Ref<number>,
+	initialY : Ref<number>,
+	offsetX : Ref<number>,
+	offsetY : Ref<number>,
+	ofsetFinalX : Ref<number>,
+	ofsetFinalY : Ref<number>,
+}
+const divs =  [{
+	idx : ref(0),
+	id : ref('desktop'),
+	div : ref<HTMLElement>(null as unknown as HTMLElement),
+	initialX : ref(0),
+	initialY : ref(0),
+	offsetX : ref(0),
+	offsetY : ref(0),
+	ofsetFinalX : ref(0),
+	ofsetFinalY : ref(0),
+},
+{
+	idx : ref(1),
+	id : ref('tablet'),
+	div : ref<HTMLElement>(null as unknown as HTMLElement),
+	initialX : ref(0),
+	initialY : ref(0),
+	offsetX : ref(0),
+	offsetY : ref(0),
+	ofsetFinalX : ref(0),
+	ofsetFinalY : ref(0),
+},
+{
+	idx : ref(2),
+	id : ref('mobile'),
+	div : ref<HTMLElement>(null as unknown as HTMLElement),
+	initialX : ref(0),
+	initialY : ref(0),
+	offsetX : ref(0),
+	offsetY : ref(0),
+	ofsetFinalX : ref(0),
+	ofsetFinalY : ref(0),
+}];
+
+
+
+
+
+const findParentWithId = (target : HTMLElement) => {
+let element = target;
+  while (typeof divs.find(value =>  value.id.value === element.id) === 'undefined') {
+	if(element.parentElement === null) return null;
+    element = element.parentElement!;
+  }
+  return element;
+};
+
+
+const updatePosition= ( {x, y, element} : {x : number, y : number, element : string}) => {
+	const currentCanvas : {x : number, y : number, element : string}[]  = JSON.parse(pages.value[0].canvas_position)
+	const foundElement = currentCanvas.find((item,index) => {
+		if(item.element === element)
+		{
+			currentCanvas[index] = {x : x, y : y, element : element};
+			return true;
+		}
+		else{
+			return false;
+		}
+		
+	});
+	if (!foundElement) {
+		currentCanvas.push({x : x, y : y, element : element});
+	}
+	webPages.setValue.submit({
+		name: id,
+		canvas_position : JSON.stringify(currentCanvas)
+	});
+}
+
+
+
+const handleMouseDown = (event: MouseEvent) => {
+	dragging.value = true;
+	const target = event.target! as HTMLElement;
+	const parent = findParentWithId(target);
+	if(parent === null) return;
+	// Parcourir les éléments enfants
+	const element = divs.find(value =>  value.id.value === parent.id) as Divs;
+	element.initialX.value = event.screenX ;
+	element.initialY.value = event.screenY;
+	element.div.value = parent;
+	divs[element.idx.value] = element;
+	current.value = element.idx.value;
+}
+
+onMounted(() => {
+  canvas && canvas.value.addEventListener("mousedown", handleMouseDown);
+});
+
+const handleMouseUp = () => {
+  if (!dragging.value) return;
+  divs[current.value].ofsetFinalX.value = divs[current.value].offsetX.value;
+  divs[current.value].ofsetFinalY.value = divs[current.value].offsetY.value;
+  updatePosition({x : divs[current.value].ofsetFinalX.value, y : divs[current.value].ofsetFinalY.value, element : divs[current.value].id.value});
+  dragging.value = false;
+};
+
+const handleMouseMove = (event: MouseEvent) => {
+  if (!dragging.value) return;
+  divs[current.value].offsetX.value = divs[current.value].ofsetFinalX.value + (event.screenX - divs[current.value].initialX.value)*4 ;
+  divs[current.value].offsetY.value = divs[current.value].ofsetFinalY.value + (event.screenY - divs[current.value].initialY.value)*4;
+  divs[current.value].div.value.style.transform = `translate(${divs[current.value].offsetX.value}px, ${divs[current.value].offsetY.value}px)`;
+};
+
+
+
+
+
+document.addEventListener('mousemove', (event) => handleMouseMove(event));
+document.addEventListener('mouseup',handleMouseUp);
+
+const pages = computed(() =>
+	(webPages.data || []).filter((page: BuilderPage) => {
+		if(id === page.name){
+			const canvas_position = JSON.parse(page.canvas_position!);
+			if (typeof canvas_position === 'undefined') return;
+			canvas_position.forEach((element : {x : number, y : number, element : string}) => {
+				const div = divs.find(value =>  value.id.value === element.element) as Divs;
+				div.ofsetFinalX.value = element.x;
+				div.ofsetFinalY.value = element.y;
+				divs[div.idx.value] = div;
+			});
+			return true;
+		}
+		else{
+			return false;
+		}
+	})
+
+);
+
+
+
+
 
 const props = defineProps({
 	block: {
@@ -109,6 +271,8 @@ onMounted(() => {
 	props.canvasProps.overlayElement = overlay.value;
 	setEvents();
 });
+
+
 
 const { isOverDropZone } = useDropZone(canvasContainer, {
 	onDrop: (files, ev) => {
@@ -348,4 +512,9 @@ const handleClick = (ev: MouseEvent) => {
 		store.clearSelection();
 	}
 };
+
+onActivated(() => {
+	webPages.fetch();
+});
+
 </script>
