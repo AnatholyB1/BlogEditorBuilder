@@ -139,6 +139,7 @@
    "options": "CSS"
   },
   {
+   "default": "[{\"x\":0,\"y\":0,\"element\":\"tablet\"},{\"x\":0,\"y\":0,\"element\":\"mobile\"},{\"x\":0,\"y\":0,\"element\":\"desktop\"}]",
    "fieldname": "canvas_position",
    "fieldtype": "JSON",
    "label": "Canvas position"
@@ -146,7 +147,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-11-27 17:19:01.890249",
+ "modified": "2023-11-29 11:35:12.743342",
  "modified_by": "Administrator",
  "module": "Builder",
  "name": "Builder Page",

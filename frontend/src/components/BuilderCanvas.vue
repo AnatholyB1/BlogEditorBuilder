@@ -227,8 +227,7 @@ document.addEventListener('mouseup',handleMouseUp);
 const pages = computed(() =>
 	(webPages.data || []).filter((page: BuilderPage) => {
 		if(id === page.name){
-			const canvas_position = JSON.parse(page.canvas_position!);
-			if (typeof canvas_position === 'undefined') return;
+			const canvas_position : {x : number, y : number, element : string}[] = JSON.parse(page.canvas_position!) as {x : number, y : number, element : string}[];
 			canvas_position.forEach((element : {x : number, y : number, element : string}) => {
 				const div = divs.find(value =>  value.id.value === element.element) as Divs;
 				div.ofsetFinalX.value = element.x;
