@@ -49,7 +49,7 @@
 <script setup lang="ts">
 import Block from "@/utils/block";
 import { addPxToNumber } from "@/utils/helpers";
-import { Ref, computed, inject, nextTick, onMounted, ref, watch, watchEffect } from "vue";
+import { Ref, computed, inject, nextTick, onMounted, popScopeId, ref, watch, watchEffect } from "vue";
 
 import blockController from "@/utils/blockController";
 import useStore from "../store";
@@ -61,6 +61,7 @@ import BoxResizer from "./BoxResizer.vue";
 import MarginHandler from "./MarginHandler.vue";
 import PaddingHandler from "./PaddingHandler.vue";
 
+const out = ref(false);
 const canvasProps = inject("canvasProps") as CanvasProps;
 
 const showResizer = computed(() => {
@@ -99,6 +100,7 @@ const resizing = ref(false);
 const guides = setGuides(props.target, canvasProps);
 const moving = ref(false);
 const preventCLick = ref(false);
+
 
 watchEffect(() => {
 	props.block.getStyle("top");
@@ -208,12 +210,53 @@ const handleMove = (ev: MouseEvent) => {
 	const startY = ev.clientY;
 	const startLeft = props.target.offsetLeft;
 	const startTop = props.target.offsetTop;
+	
 	moving.value = true;
 	guides.showX();
 
 	// to disable cursor jitter
 	const docCursor = document.body.style.cursor;
 	document.body.style.cursor = window.getComputedStyle(target).cursor;
+
+	const rootElement = document.getElementById(store.activeBreakpoint)
+
+	function appendToTeleport(blockId : string, ) {
+		const teleport = document.querySelectorAll<HTMLElement>((`[data-block-id="${blockId}"]`)) 
+		teleport[0].appendChild(teleport[1].cloneNode(true))
+		const style = ["!block" ,"!grid" ,"!place-items-center", "!w-full", "!h-full" ,"!bg-white", "!shadow-sm", "!static", "!text-lg"]
+		style.forEach((c) => {
+			teleport[0].lastElementChild!.classList.add(c)
+		})
+	}
+
+	function removeToTeleport(blockId : string, ) {
+		const teleport = document.querySelectorAll<HTMLElement>((`[data-block-id="${blockId}"]`))
+		teleport[0].removeChild(teleport[0].lastElementChild!);
+		console.log(teleport)
+	}
+
+	function handleElementExit(eX : number, eY : number ) {
+	const { left, top, bottom, right } = rootElement!.getBoundingClientRect();
+	const elementLeft = eX - left;
+	const elementRight = eX - right;
+	const elementTop = eY - top;
+	const elementBottom = eY - bottom;
+
+	
+
+	if (elementLeft < 0 || elementRight > 0 || elementTop < 0 || elementBottom > 0) {
+		if( out.value) return
+		out.value = true;
+		appendToTeleport(props.block.blockId)
+
+	}else if(out.value){
+		
+		removeToTeleport(props.block.blockId)
+		out.value = false;
+	}
+
+
+	}
 
 	const mousemove = async (mouseMoveEvent: MouseEvent) => {
 		const scale = canvasProps.scale;
@@ -224,13 +267,14 @@ const handleMove = (ev: MouseEvent) => {
 		props.block.setStyle("top", addPxToNumber(startTop + movementY));
 		await nextTick();
 		const { leftOffset, rightOffset } = guides.getPositionOffset();
+		handleElementExit(mouseMoveEvent.clientX, mouseMoveEvent.clientY)
 		if (leftOffset !== 0) {
 			props.block.setStyle("left", addPxToNumber(finalLeft + leftOffset));
+			
 		}
 		if (rightOffset !== 0) {
 			props.block.setStyle("left", addPxToNumber(finalLeft + rightOffset));
 		}
-
 		mouseMoveEvent.preventDefault();
 		preventCLick.value = true;
 	};

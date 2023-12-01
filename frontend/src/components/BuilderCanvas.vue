@@ -345,7 +345,7 @@ function setEvents() {
 				`.canvas [data-block-id="${parentBlock.blockId}"]`
 			) as HTMLElement;
 			const parentOldPosition = parentBlock.getStyle("position");
-			parentBlock.setBaseStyle("position", parentOldPosition || "relative");
+			parentBlock.setBaseStyle("position", parentOldPosition || "absolute");
 			const parentElementBounds = parentElement.getBoundingClientRect();
 			let x = (ev.x - parentElementBounds.left) / props.canvasProps.scale;
 			let y = (ev.y - parentElementBounds.top) / props.canvasProps.scale;
@@ -361,6 +361,7 @@ function setEvents() {
 				if (store.mode === "text" || store.mode === "html") {
 					return;
 				} else {
+				
 					mouseMoveEvent.preventDefault();
 					let width = (mouseMoveEvent.clientX - initialX) / props.canvasProps.scale;
 					let height = (mouseMoveEvent.clientY - initialY) / props.canvasProps.scale;
@@ -376,9 +377,7 @@ function setEvents() {
 				"mouseup",
 				() => {
 					document.removeEventListener("mousemove", mouseMoveHandler);
-					childBlock.setBaseStyle("position", "static");
-					childBlock.setBaseStyle("top", "auto");
-					childBlock.setBaseStyle("left", "auto");
+					childBlock.setBaseStyle("position", "absolute");
 					if (store.mode === "text" || store.mode === "html") {
 						store.history.resume();
 					}
@@ -388,7 +387,6 @@ function setEvents() {
 					if (getNumberFromPx(childBlock.getStyle("height")) < 100) {
 						childBlock.setBaseStyle("height", "200px");
 					}
-					parentBlock.setBaseStyle("position", parentOldPosition || "static");
 					setTimeout(() => {
 						store.mode = "select";
 					}, 50);

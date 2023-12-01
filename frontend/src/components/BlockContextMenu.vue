@@ -96,9 +96,6 @@ const duplicateBlock = () => {
 
 const createComponentHandler = ({ close }: { close: () => void }) => {
 	const blockCopy = store.getBlockCopy(props.block, true);
-	blockCopy.removeStyle("left");
-	blockCopy.removeStyle("top");
-	blockCopy.removeStyle("position");
 	webComponent.insert
 		.submit({
 			block: blockCopy,

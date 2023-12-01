@@ -26,7 +26,7 @@
 							transform: 'scale(' + component.scale + ')',
 						}">
 						<BuilderBlock
-							class="!static !m-0 h-fit max-w-fit !items-center !justify-center"
+							class=" !m-0 h-fit max-w-fit !items-center !justify-center"
 							:block="component.block"
 							@mounted="($el) => setScale($el, component)"
 							:preview="true" />

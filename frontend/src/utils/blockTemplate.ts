@@ -11,6 +11,7 @@ function getBlockTemplate(
 					baseStyles: {
 						display: "flex",
 						flexDirection: "column",
+						position: "static",
 						height: "100vh",
 						width: "100%",
 						alignItems: "center",
@@ -22,7 +23,7 @@ function getBlockTemplate(
 				name: "HTML",
 				element: "div",
 				originalElement: "__raw_html__",
-				innerHTML: `<div style="color: #8e8e8e;background: #f4f4f4;display:flex;flex-direction:column;position:static;top:auto;left:auto;width: 200px;height: 155px;align-items:center;font-size:18px;justify-content:center"><p>&lt;paste html&gt;</p></div>`,
+				innerHTML: `<div style="color: #8e8e8e;background: #f4f4f4;display:flex;flex-direction:column;position:absolute;top:auto;left:auto;width: 200px;height: 155px;align-items:center;font-size:18px;justify-content:center"><p>&lt;paste html&gt;</p></div>`,
 				baseStyles: {
 					height: "fit-content",
 					width: "fit-content",
@@ -101,7 +102,7 @@ function getBlockTemplate(
 
 				element: "p",
 				originalElement: "__raw_html__",
-				innerHTML: `<div style="color: red;background: #f4f4f4;display:flex;flex-direction:column;position:static;top:auto;left:auto;width: 600px;height: 275px;align-items:center;font-size: 30px;justify-content:center"><p>Component missing</p></div>`,
+				innerHTML: `<div style="color: red;background: #f4f4f4;display:flex;flex-direction:column;position:absolute;top:auto;left:auto;width: 600px;height: 275px;align-items:center;font-size: 30px;justify-content:center"><p>Component missing</p></div>`,
 				baseStyles: {
 					position: "absolute",
 					height: "fit-content",

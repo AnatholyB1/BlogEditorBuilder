@@ -10,7 +10,7 @@ export function useDraggableBlock(block: Block, target: HTMLElement, options: { 
 		e.dataTransfer?.setData("draggingBlockId", block.blockId);
 		ghostElement = target.cloneNode(true) as HTMLElement;
 		ghostElement.id = "ghost";
-		ghostElement.style.position = "fixed";
+		ghostElement.style.position = "absolute";
 		ghostElement.style.transform = `scale(${options.ghostScale || 1})`;
 		ghostElement.style.pointerEvents = "none";
 		ghostElement.style.zIndex = "999999";

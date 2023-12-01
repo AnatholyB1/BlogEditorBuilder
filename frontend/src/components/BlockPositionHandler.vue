@@ -90,14 +90,10 @@ const bottom = computed({
 
 const position = computed({
 	get() {
-		return (blockController.getStyle("position") as string) || "static";
+		return (blockController.getStyle("position") as string) || "absolute";
 	},
 	set(value: string) {
 		blockController.setStyle("position", value);
-		const parentBlock = blockController.getParentBlock();
-		if (parentBlock) {
-			parentBlock.setStyle("position", "relative");
-		}
 	},
 });
 </script>

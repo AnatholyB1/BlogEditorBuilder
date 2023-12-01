@@ -23,7 +23,7 @@
 			v-for="child in block.getChildren()" />
 		<Button @click="addBlankSection"  class="absolute bottom-0 z-[99999999] left-1/2 origin-center -translate-x-1/2 translate-y-1/2"  v-if="block.getTag() === 'section' && block.getParentBlock()?.isRoot() == true ">Add Section</Button>
 	</component>
-	<teleport to="#overlay" v-if="canvasProps?.overlayElement && !preview && canvasProps">
+	<teleport  to="#overlay" v-if="canvasProps?.overlayElement && !preview && canvasProps">
 		<BlockEditor
 			ref="editor"
 			v-if="loadEditor"
