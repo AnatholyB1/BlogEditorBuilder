@@ -3,9 +3,5 @@
 *.egg-info
 *.swp
 tags
+
 node_modules
-builder/public/frontend
-builder/www/index.html
-builder/www/p.html
-builder/www/builder.html
-builder/www/builder.html
