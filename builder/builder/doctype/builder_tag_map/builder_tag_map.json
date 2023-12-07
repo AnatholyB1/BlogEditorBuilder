@@ -1,0 +1,41 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:tag",
+ "creation": "2023-12-06 15:55:28.867069",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "column_break_ityt",
+  "tag"
+ ],
+ "fields": [
+  {
+   "fieldname": "column_break_ityt",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tag",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Tag",
+   "options": "Builder Tag",
+   "unique": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-12-07 15:24:56.485083",
+ "modified_by": "Administrator",
+ "module": "Builder",
+ "name": "Builder Tag Map",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

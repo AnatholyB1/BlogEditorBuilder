@@ -70,7 +70,7 @@ declare type HashString = `#${string}`;
 
 declare type RGBString = `rgb(${number}, ${number}, ${number})`;
 
-declare type LeftSidebarTabOption = "Categories" | "Layers";
+declare type LeftSidebarTabOption = "templates" | "layers" | "components" | "ia" | "question"
 declare type RightSidebarTabOption = "Properties" | "Data" | "Settings";
 
 declare type BuilderMode = "select" | "text" | "container" | "image" | "html";
@@ -87,3 +87,5 @@ declare interface CanvasProps {
 }
 
 declare type EditingMode = "page" | "component";
+
+declare interface Category {name : string, Icon : Icon, focus: string} 

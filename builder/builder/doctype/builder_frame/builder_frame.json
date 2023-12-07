@@ -1,35 +1,54 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "field:category_id",
- "creation": "2023-11-23 10:57:55.530423",
+ "autoname": "field:frame_name",
+ "creation": "2023-12-06 16:21:59.424974",
  "default_view": "List",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "category_name",
-  "category_id"
+  "frame_name",
+  "frame_id",
+  "width",
+  "height"
  ],
  "fields": [
   {
-   "fieldname": "category_name",
+   "fieldname": "frame_name",
    "fieldtype": "Data",
-   "label": "Category Name"
+   "in_list_view": 1,
+   "label": "Frame name",
+   "reqd": 1,
+   "set_only_once": 1,
+   "unique": 1
   },
   {
-   "fieldname": "category_id",
+   "fieldname": "frame_id",
    "fieldtype": "Data",
-   "label": "Category Id",
+   "in_list_view": 1,
+   "label": "Frame ID",
+   "reqd": 1,
+   "set_only_once": 1,
    "unique": 1
+  },
+  {
+   "fieldname": "width",
+   "fieldtype": "Int",
+   "label": "Width"
+  },
+  {
+   "fieldname": "height",
+   "fieldtype": "Data",
+   "label": "Height"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-12-06 15:22:25.088994",
+ "modified": "2023-12-06 16:21:59.424974",
  "modified_by": "Administrator",
  "module": "Builder",
- "name": "Builder Category",
+ "name": "Builder Frame",
  "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [

@@ -12,22 +12,6 @@
 			:style="{
 				transform: `scale(${canvasProps.scale}) translate(${canvasProps.translateX}px, ${canvasProps.translateY}px)`,
 			}">
-			<div class="absolute right-0 top-[-60px] flex rounded-md bg-white px-3 dark:bg-zinc-900">
-				<div
-					v-show="!canvasProps.scaling && !canvasProps.panning"
-					class="w-auto cursor-pointer p-2"
-					v-for="breakpoint in store.deviceBreakpoints"
-					:key="breakpoint.device"
-					@click.stop="breakpoint.visible = !breakpoint.visible">
-					<FeatherIcon
-						:name="breakpoint.icon"
-						class="h-8 w-6"
-						:class="{
-							'text-gray-700 dark:text-zinc-50': breakpoint.visible,
-							'text-gray-300 dark:text-zinc-500': !breakpoint.visible,
-						}" />
-				</div>
-			</div>
 			<div
 			    v-if="pages.length > 0"
 				class="canvas relative flex h-full rounded-md bg-white shadow-2xl"
@@ -40,15 +24,43 @@
 				v-for="breakpoint in visibleBreakpoints"
 				:id="breakpoint.device"
 				:key="breakpoint.device">
-				<div
-					class="absolute left-0 select-none text-3xl text-gray-700 dark:text-zinc-300 translate-x-[] translate-y-[]"
-					:style="{
-						fontSize: `calc(${12}px * 1/${canvasProps.scale})`,
-						top: `calc(${-20}px * 1/${canvasProps.scale})`,
-					}"
-					v-show="!canvasProps.scaling && !canvasProps.panning">
-					{{ breakpoint.displayName }}
+				<div id="moovable"  class="absolute hover:cursor-grab left-0 right-0 top-[-60px] w-full flex justify-between items-center rounded-md bg-[#E6E6E6] px-[10px] py-[8px]">
+					<div class="flex flex-row gap-[10px] items-center">
+						<div
+							v-show="!canvasProps.scaling && !canvasProps.panning"
+							class="w-[25px] grid place-items-center h-[25px] bg-[#A9A9A9] rounded-sm "
+							@click.stop="breakpoint.visible = !breakpoint.visible">
+							<FeatherIcon
+								:name="breakpoint.icon"
+								class="h-[16px] w-[16px] text-white"
+							/>
+
+						</div>
+						<div class="text-[#949494] text-[14px] font-[600] leading-[19.5px]">
+							{{ breakpoint.displayName  }}
+							{{ breakpoint.width }}
+						</div>
+
+					</div>
+					<div class=" w-auto flex flex-row gap-[10px] items-center">
+						<div class="text-[#A9A9A9] text-right font-[600] leading-[19.5px]">Breakpoint</div>
+						<div class="grid place-items-center w-[25px] h-[25px] bg-[#A9A9A9] rounded-sm hover:cursor-pointer"
+							@click.stop="() => {
+								if(breakpoint.device === 'desktop')
+								{
+									setAllBreakPointVisibe()
+								}
+								else{
+									breakpoint.visible = !breakpoint.visible;
+								}
+								
+								}">
+							<Plus v-show="breakpoint.device == 'desktop'" class="w-[16px] h-[16px] text-white"/>
+							<Minus v-show="breakpoint.device != 'desktop'" class="w-[16px] h-[16px] text-white"/>
+						</div>
+					</div>
 				</div>
+
 				<BuilderBlock
 					:block="block"
 					v-if="showBlocks"
@@ -88,6 +100,8 @@ import BuilderBlock from "./BuilderBlock.vue";
 import {Ref} from 'vue';
 import { webPages } from "@/data/webPage";
 import { BuilderPage } from "@/types/Builder/BuilderPage";
+import { Plus } from 'lucide-vue-next';
+import { Minus } from 'lucide-vue-next';
 
 const store = useStore();
 const canvasContainer = ref(null);
@@ -147,6 +161,11 @@ const divs =  [{
 }];
 
 
+const setAllBreakPointVisibe = () => {
+	store.deviceBreakpoints.forEach(element => {
+		element.visible = true;
+	});
+}
 
 
 
@@ -185,10 +204,13 @@ const updatePosition= ( {x, y, element} : {x : number, y : number, element : str
 
 
 const handleMouseDown = (event: MouseEvent) => {
-	dragging.value = true;
+	if (event.button !== 0) return;
+	
 	const target = event.target! as HTMLElement;
+	if(target.id !== 'moovable') return;
 	const parent = findParentWithId(target);
 	if(parent === null) return;
+	dragging.value = true;
 	// Parcourir les éléments enfants
 	const element = divs.find(value =>  value.id.value === parent.id) as Divs;
 	element.initialX.value = event.screenX ;
@@ -211,9 +233,9 @@ const handleMouseUp = () => {
 };
 
 const handleMouseMove = (event: MouseEvent) => {
-  if (!dragging.value) return;
-  divs[current.value].offsetX.value = divs[current.value].ofsetFinalX.value + (event.screenX - divs[current.value].initialX.value)*4 ;
-  divs[current.value].offsetY.value = divs[current.value].ofsetFinalY.value + (event.screenY - divs[current.value].initialY.value)*4;
+  if (!dragging.value) return
+  divs[current.value].offsetX.value = divs[current.value].ofsetFinalX.value + (event.screenX - divs[current.value].initialX.value)*1.75  ;
+  divs[current.value].offsetY.value = divs[current.value].ofsetFinalY.value + (event.screenY - divs[current.value].initialY.value)*1.75 ;
   divs[current.value].div.value.style.transform = `translate(${divs[current.value].offsetX.value}px, ${divs[current.value].offsetY.value}px)`;
 };
 

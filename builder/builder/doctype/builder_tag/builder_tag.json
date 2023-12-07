@@ -1,35 +1,44 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "field:category_id",
- "creation": "2023-11-23 10:57:55.530423",
+ "autoname": "field:tag_name",
+ "creation": "2023-12-07 14:07:14.492824",
  "default_view": "List",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "category_name",
-  "category_id"
+  "column_break_ityt",
+  "tag_id",
+  "tag_name"
  ],
  "fields": [
   {
-   "fieldname": "category_name",
-   "fieldtype": "Data",
-   "label": "Category Name"
+   "fieldname": "column_break_ityt",
+   "fieldtype": "Column Break"
   },
   {
-   "fieldname": "category_id",
+   "fieldname": "tag_id",
    "fieldtype": "Data",
-   "label": "Category Id",
+   "in_list_view": 1,
+   "label": "Tag id",
+   "reqd": 1
+  },
+  {
+   "fieldname": "tag_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Tag name",
+   "reqd": 1,
    "unique": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-12-06 15:22:25.088994",
+ "modified": "2023-12-07 15:24:32.574886",
  "modified_by": "Administrator",
  "module": "Builder",
- "name": "Builder Category",
+ "name": "Builder Tag",
  "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [

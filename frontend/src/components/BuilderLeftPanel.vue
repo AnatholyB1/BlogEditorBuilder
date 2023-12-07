@@ -1,9 +1,31 @@
 <template>
-	<div
+	<div class="grid grid-flow-col h-full overflow-hidden"
 		:style="{
 			width: `${store.builderLayout.leftPanelWidth}px`,
 		}">
-		<div v-if="false" class="mb-5 flex flex-col overflow-hidden rounded-lg text-sm">
+		<div class="flex flex-col w-[64px] h-full p-[12px] gap-[10px]  border-r col-span-1">
+			
+			<Button v-for="button in store.categories.slice(0, -1)" 
+				:key="button.name"
+				class="grid dark:text-white bg-transparent w-[36px] h-[36px]  place-items-center rounded-md cursor-pointer"
+				:style="{ '--bg-color': button.focus }"
+				:class="{[`custom-bg text-white  `]: store.leftPanelActiveTab === button.name}"
+				@click="setActiveTab(button.name as LeftSidebarTabOption)"
+			>
+				<component :is="button.Icon" size="16"  />
+			</Button>
+			<div  class="bg-[#E4E4E7] w-[32px] h-[1px]"></div>
+			<Button 
+				class="grid dark:text-white bg-transparent w-[36px] h-[36px] place-items-center rounded-md cursor-pointer"
+				:style="{ '--bg-color': store.categories[store.categories.length -1].focus }"
+				:class="{[`custom-bg text-white  `]: store.leftPanelActiveTab === store.categories[store.categories.length -1].name}"
+				@click="setActiveTab(store.categories[store.categories.length -1].name as LeftSidebarTabOption)"
+			>
+				<component :is="store.categories[store.categories.length -1].Icon" size="16"  />
+			</Button>
+
+		</div>
+		<div v-if="false" class="`w-[300px] px-[12px] py-[16px] flex flex-col gap-[16px]">
 			<textarea
 				class="h-fit resize-none rounded-sm border-0 bg-gray-300 text-sm outline-none no-scrollbar dark:bg-zinc-700 dark:text-white"
 				v-model="prompt"
@@ -20,31 +42,17 @@
 			:dimension="store.builderLayout.leftPanelWidth"
 			side="right"
 			@resize="(width) => (store.builderLayout.leftPanelWidth = width)" />
-		<div class="flex w-full border-gray-200 p-[2px] text-sm dark:border-zinc-800">
-			<button
-				v-for="tab of ['Layers', 'Categories']"
-				:key="tab"
-				class="mx-3 flex-1 p-2"
-				@click.stop="setActiveTab(tab as LeftSidebarTabOption)"
-				:class="{
-					'border-b-[1px] border-gray-900 dark:border-zinc-500 dark:text-zinc-300':
-						store.leftPanelActiveTab === tab,
-					'text-gray-700 dark:text-zinc-500': store.leftPanelActiveTab !== tab,
-				}">
-				{{ tab }}
-			</button>
+		<div class="h-full" v-show="store.leftPanelActiveTab === 'templates' || store.leftPanelActiveTab ==='components'">
+			<BuilderCategory   class="w-[300px] px-[12px] py-[16px] flex flex-col gap-[16px]" />
 		</div>
-		<div class="h-full" v-show="store.leftPanelActiveTab === 'Categories'">
-			<BuilderCategory class="p-4 pt-3" />
-		</div>
-		<div v-show="store.leftPanelActiveTab === 'Layers'">
+		<div v-show="store.leftPanelActiveTab === 'layers'" >
 			<BlockLayers
-				class="p-4 pt-3"
+				class="w-[300px] px-[12px] py-[16px] flex flex-col gap-[16px]"
 				:blocks="store.builderState.blocks"
 				v-if="!store.editingComponent"
 				v-show="store.editingMode == 'page'" />
 			<BlockLayers
-				class="p-4 pt-3"
+				class="w-[300px] px-[12px] py-[16px] flex flex-col gap-[16px]"
 				:blocks="[store.getComponentBlock(store.editingComponent)]"
 				v-if="store.editingComponent" />
 		</div>
@@ -59,7 +67,7 @@ import BlockLayers from "./BlockLayers.vue";
 import BuilderCategory from "./BuilderCategory.vue";
 import PanelResizer from "./PanelResizer.vue";
 
-import { useRouter } from "vue-router";
+
 
 const prompt = ref(null) as unknown as Ref<string>;
 const store = useStore();
@@ -84,3 +92,10 @@ const setActiveTab = (tab: LeftSidebarTabOption) => {
 	store.leftPanelActiveTab = tab;
 };
 </script>
+
+
+<style scoped>
+.custom-bg {
+  background-color: var(--bg-color);
+}
+</style>

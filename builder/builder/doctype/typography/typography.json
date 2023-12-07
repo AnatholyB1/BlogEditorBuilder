@@ -1,0 +1,121 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:typographie_name",
+ "creation": "2023-12-06 15:43:38.758463",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "typographie_id",
+  "typographie_name",
+  "h1",
+  "h2",
+  "h3",
+  "h4",
+  "column_break_bnbs",
+  "h5",
+  "h6",
+  "highlights",
+  "p",
+  "tags"
+ ],
+ "fields": [
+  {
+   "fieldname": "typographie_id",
+   "fieldtype": "Data",
+   "label": "Typographie ID",
+   "options": "\n"
+  },
+  {
+   "fieldname": "typographie_name",
+   "fieldtype": "Data",
+   "label": "Typographie name",
+   "unique": 1
+  },
+  {
+   "fieldname": "h1",
+   "fieldtype": "Code",
+   "label": "H1",
+   "options": "SCCS"
+  },
+  {
+   "fieldname": "h2",
+   "fieldtype": "Code",
+   "label": "H2",
+   "options": "SCCS"
+  },
+  {
+   "fieldname": "h3",
+   "fieldtype": "Code",
+   "label": "H3",
+   "options": "SCCS"
+  },
+  {
+   "fieldname": "h4",
+   "fieldtype": "Code",
+   "label": "H4",
+   "options": "SCCS"
+  },
+  {
+   "fieldname": "column_break_bnbs",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "h5",
+   "fieldtype": "Code",
+   "label": "H5",
+   "options": "SCCS"
+  },
+  {
+   "fieldname": "h6",
+   "fieldtype": "Code",
+   "label": "H6",
+   "options": "SCCS"
+  },
+  {
+   "fieldname": "highlights",
+   "fieldtype": "Code",
+   "label": "Highlights",
+   "options": "SCCS"
+  },
+  {
+   "fieldname": "p",
+   "fieldtype": "Code",
+   "label": "Paragraphe",
+   "options": "SCCS"
+  },
+  {
+   "fieldname": "tags",
+   "fieldtype": "Table",
+   "label": "Tags",
+   "options": "Builder Tag Map"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-12-07 14:05:04.110994",
+ "modified_by": "Administrator",
+ "module": "Builder",
+ "name": "Typography",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

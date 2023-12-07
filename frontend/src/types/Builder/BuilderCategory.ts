@@ -13,5 +13,4 @@ export interface BuilderCategory {
 	category_name?: string;
 	/**	Component ID : Data	*/
 	category_id?: string;
-    components?: any;
 }

@@ -9,6 +9,7 @@ import { BuilderPage } from "./types/Builder/BuilderPage";
 import Block from "./utils/block";
 import getBlockTemplate from "./utils/blockTemplate";
 import { stripExtension } from "./utils/helpers";
+import  {HelpCircle, Layers, LayoutPanelLeft, Shapes, Sparkles}  from "lucide-vue-next";
 
 const useStore = defineStore("store", {
 	state: () => ({
@@ -33,9 +34,31 @@ const useStore = defineStore("store", {
 		hoveredBreakpoint: <string | null>null,
 		routeVariables: <{ [key: string]: string }>{},
 		autoSave: true,
+		categories: <Category[]>[{
+			name: "templates",
+			Icon: LayoutPanelLeft,
+			focus : "#FF4488"
+		},{
+			name: "components",
+			Icon: Shapes,
+			focus : '#F82'
+		},{
+			name: "layers",
+			Icon: Layers,
+			focus : '#FB0'
+		},{
+			name: "ia",
+			Icon: Sparkles,
+			focus : '#4DD'
+		},{
+			name: "question",
+			Icon: HelpCircle,
+			focus : "#38AAFF"
+
+		}],
 		builderLayout: {
 			rightPanelWidth: 275,
-			leftPanelWidth: 350,
+			leftPanelWidth: 364,
 			scriptEditorHeight: 400,
 		},
 		flow: [
@@ -188,7 +211,7 @@ const useStore = defineStore("store", {
 				visible: false,
 			},
 		],
-		leftPanelActiveTab: <LeftSidebarTabOption>"Categories",
+		leftPanelActiveTab: <LeftSidebarTabOption>"templates",
 		rightPanelActiveTab: <RightSidebarTabOption>"Properties",
 		showRightPanel: <boolean>false,
 		showLeftPanel: <boolean>true,

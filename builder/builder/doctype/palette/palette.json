@@ -1,0 +1,107 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:palette_name",
+ "creation": "2023-12-04 15:00:53.637466",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "palette_name",
+  "palette_id",
+  "nature1",
+  "nature2",
+  "primary1",
+  "column_break_lvco",
+  "primary2",
+  "secondary1",
+  "secondary2",
+  "tag"
+ ],
+ "fields": [
+  {
+   "fieldname": "palette_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Palette name",
+   "reqd": 1,
+   "set_only_once": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "palette_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Palette ID",
+   "reqd": 1,
+   "set_only_once": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "column_break_lvco",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tag",
+   "fieldtype": "Table",
+   "label": "Tags",
+   "options": "Builder Tag Map"
+  },
+  {
+   "fieldname": "nature1",
+   "fieldtype": "Data",
+   "label": "Nature 1"
+  },
+  {
+   "fieldname": "nature2",
+   "fieldtype": "Data",
+   "label": "Nature 2"
+  },
+  {
+   "fieldname": "primary1",
+   "fieldtype": "Data",
+   "label": "Primary 1"
+  },
+  {
+   "fieldname": "primary2",
+   "fieldtype": "Data",
+   "label": "Primary 2"
+  },
+  {
+   "fieldname": "secondary1",
+   "fieldtype": "Data",
+   "label": "Secondary 1"
+  },
+  {
+   "fieldname": "secondary2",
+   "fieldtype": "Data",
+   "label": "Secondary 2"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-12-07 14:05:04.634722",
+ "modified_by": "Administrator",
+ "module": "Builder",
+ "name": "Palette",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

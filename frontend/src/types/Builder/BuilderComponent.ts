@@ -17,4 +17,12 @@ export interface BuilderComponent {
 	for_web_page?: string;
 	/**	Component ID : Data	*/
 	component_id?: string;
+	/**	Component category : string	*/
+	category?: string;
+	/**	Component frame : string	*/
+	frame?: string;
+	/**	Component palette : string	*/
+	palette?: string;
+	/**	Component typography : string	*/
+	typography?: string;
 }
