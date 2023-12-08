@@ -73,7 +73,7 @@ declare type RGBString = `rgb(${number}, ${number}, ${number})`;
 declare type LeftSidebarTabOption = "templates" | "layers" | "components" | "ia" | "question"
 declare type RightSidebarTabOption = "Properties" | "Data" | "Settings";
 
-declare type BuilderMode = "select" | "text" | "container" | "image" | "html";
+declare type BuilderMode = "select" | "text" | "container" | "image" | "html" | "section";
 
 declare interface CanvasProps {
 	scale: number;

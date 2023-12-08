@@ -333,6 +333,11 @@ useEventListener(document, "keydown", (e) => {
 		store.mode = "select";
 		return;
 	}
+
+	if (e.key === "s") {
+		store.mode = "section";
+		return;
+	}
 });
 
 useEventListener(document, "keydown", (e) => {
@@ -469,6 +474,7 @@ onActivated(async () => {
 	if (route.params.pageId && route.params.pageId !== "new") {
 		setPage(route.params.pageId as string);
 	} else {
+		
 		webPages.insert
 			.submit({
 				page_title: "My Page",

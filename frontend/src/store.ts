@@ -30,6 +30,7 @@ const useStore = defineStore("store", {
 			resume: () => {},
 		} as UseRefHistoryReturn<{}, {}>,
 		usedComponents: {},
+		templatesinUse: <any[] | null>null,
 		hoveredBlock: <string | null>null,
 		hoveredBreakpoint: <string | null>null,
 		routeVariables: <{ [key: string]: string }>{},

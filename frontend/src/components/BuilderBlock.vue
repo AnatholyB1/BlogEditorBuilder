@@ -5,7 +5,6 @@
 		@click="handleClick"
 		@dblclick="handleDoubleClick"
 		@contextmenu="triggerContextMenu($event)"
-		@mouseover="handleMouseOver"
 		@mouseleave="handleMouseLeave"
 		:data-block-id="block.blockId"
 		:draggable="draggable"
@@ -185,7 +184,7 @@ const selectBlock = (e: MouseEvent | null) => {
 	store.activeBreakpoint = props.breakpoint;
 
 	if (!props.preview) {
-		store.leftPanelActiveTab = "Layers";
+		store.leftPanelActiveTab = "layers";
 		store.rightPanelActiveTab = "Properties";
 	}
 };
@@ -233,11 +232,7 @@ const handleDoubleClick = (e: MouseEvent) => {
 	}
 };
 
-const handleMouseOver = (e: MouseEvent) => {
-	store.hoveredBlock = props.block.blockId;
-	store.hoveredBreakpoint = props.breakpoint;
-	e.stopPropagation();
-};
+
 
 const handleMouseLeave = (e: MouseEvent) => {
 	if (store.hoveredBlock === props.block.blockId) {

@@ -1,7 +1,7 @@
 <template>
 	<div class="flex flex-col gap-[16px] h-full">
 		<div v-show="!selectedTemplate" class="flex flex-col justify-center items-start gap-[12px]">
-			<h3 class="w-[63px] text-[#71717A] font-sans text-[14px] leading-[14px]  font-[500] ">{{store.leftPanelActiveTab === 'templates' ? 'Template' : 'Element'}}</h3>
+			<h3 class="w-[63px] text-[#09090B] font-sans text-[14px] leading-[14px]  font-[500] ">{{store.leftPanelActiveTab === 'templates' ? 'Template' : 'Element'}}</h3>
 			<div class="flex justify-center flex-row w-full px-[12px] py-[4px] border rounded-md border-[#E4E4E7] shadow-sm">
 				<Input
 				class="rounded-none bg-transparent p-0 hover:bg-transparent outline-none focus:bg-transparent focus:border-none focus:outline-none focus:shadow-none border-none flex-grow"
@@ -19,39 +19,49 @@
 				</Button>
 			</div>
 		</div>
-		<div v-show="!categories.length" class="text-sm italic text-gray-600">Nothing saved</div>
-		<div v-for="category in categories" :key="category" class="flex flex-col justify-center items-start gap-[12px]">
+		<div v-show="!tags.length" class="text-sm italic text-gray-600">Nothing saved</div>
+		<div v-show="!selectedTemplate" v-for="tag in tags" :key="(tag as string)" class="flex flex-col justify-center items-start gap-[12px]">
 			<h4  class="text-[#71717A] font-sans text-[14px] leading-[14px] font-[500]">
-				{{ category }}
+				{{ tag }}
 			</h4>
-			<div class="grid grid-col-2 grid-flow-dense h-auto w-full gap-[8px]">
-				<img v-for="template in templates"  :src="template.template_icon" class="h-[74px] w-[134px] bg-cover rounded-md hover:cursor-pointer border col-span-1 row-span-1"  alt="Error"/>
+			<div class="grid grid-cols-2 grid-raws-auto grid-flow-dense h-auto w-full gap-[8px]">
+				<img 
+					@click.stop="handleclick(template)"
+					v-for="template in templates.filter((subItem : any) => subItem.tags.some((tagObj: any) => tagObj.name === tag))"  
+					:src="template.template_icon" 
+					class="h-[74px] w-[134px] bg-cover rounded-md hover:cursor-pointer border col-span-1 row-span-1"  
+					alt="Error"/>
 			</div>
 			
 		</div>
 
-		<div v-show="selectedTemplate" class="flex flex-col justify-center items-start gap-[12px]">
-			<router-link class="flex flex-col items-center w-full" :to="{ name: 'home' }">
-				<MoveLeft class="w-[16px] h-[16px] " />
-				<h1 class="text-md mt-[2px] font-semibold leading-5 text-gray-800 dark:text-gray-200">{{selectedTemplate}}</h1>
-			</router-link>
-			<div v-show="components[0]" class="grid auto-cols grid-flow-dense auto-rows w-full h-auto" >
-				<div v-for="component in components" :key="component.name" class="flex w-full col-span-1 row-span-1">
-					<div class="component-container p-2 group relative block">
-						<div
-							class="relative  flex h-24 w-full max-w-[300px] cursor-pointer items-center justify-center overflow-hidden rounded-md border bg-gray-50 p-2 shadow-sm last:mr-0 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200"
-							draggable="true"
-							@dragstart="(ev) => setData(ev, component)">
+		<div v-show="selectedTemplate" class="flex flex-col justify-center items-start gap-[16px]">
+			<div class="flex flex-row gap-[8px] items-center w-full" >
+				<MoveLeft @click.stop="reset" class="w-[16px] h-[16px] hover:cursor-pointer" />
+				<h1 class="text-[14px] font-[500] leading-[14px] text-[#09090B] dark:text-gray-200">Section</h1>
+			</div>
+			<div v-show="selectedTemplate" v-for="section in sections" :key="(section as string)" class="flex flex-col justify-center items-start gap-[12px]">
+				<h4  class="text-[#71717A] font-sans text-[14px] leading-[14px] font-[500]">
+					{{ section }}
+				</h4>
+				<div v-show="components[0]" class="grid grid-cols-2 grid-raws-auto grid-flow-dense h-auto w-full gap-[8px]" >
+					<div v-for="component in components.filter((subItem : any) => subItem.component_name === section)" :key="component.name" class="flex h-[74px] w-[134px] border rounded-md col-span-1 row-span-1">
+						<div class="component-container group w-full h-full relative block">
 							<div
-								class="pointer-events-none absolute flex w-[1400px] justify-center self-center"
-								:style="{
-									transform: 'scale(' + component.scale + ')',
-								}">
-								<BuilderBlock
-									class="!static !m-0 h-fit max-w-fit !items-center !justify-center"
-									:block="component.block"
-									@mounted="($el) => setScale($el, component)"
-									:preview="true" />
+								class="relative  flex w-full h-full cursor-pointer items-center justify-center overflow-hidden rounded-md border bg-gray-50 p-2 shadow-sm last:mr-0 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200"
+								draggable="true"
+								@dragstart="(ev) => setData(ev, component)">
+								<div
+									class="pointer-events-none absolute flex  justify-center self-center"
+									:style="{
+										transform: 'scale(' + component.scale + ')',
+									}">
+									<BuilderBlock
+										class=" h-fit max-w-fit "
+										:block="component.block"
+										@mounted="($el) => setScale($el, component)"
+										:preview="true" />
+								</div>
 							</div>
 						</div>
 					</div>
@@ -72,36 +82,94 @@ import BuilderBlock from "./BuilderBlock.vue";
 import useStore from "@/store";
 import { MoveLeft } from 'lucide-vue-next';
 import { SlidersHorizontal } from 'lucide-vue-next';
+import { toRaw, watch } from 'vue';
+
 const store = useStore();
 
 const filter = ref("");
-const selectedComponents = ref<string[]>([]);
-const selectedTemplate = ref<string>();
+const selectedComponents = ref<string>();
+const selectedTemplate = ref<any>();
+const templatevalue = ref()
 
-const templates = computed<BuilderTemplate>(() => 
-	
-	(webTemplate.data || []).filter((d: BuilderTemplate) => {
-			return d
+watch(() => webTemplate.data, (newVal) => {
+	handleNewVal(newVal);
+});
+
+const handleNewVal = async (newVal : any) => {
+	try {
+	const resolvedData = await newVal;
+	templatevalue.value = resolvedData;
+	} catch (error) {
+	console.error(error);
+	}
+};
+
+const templates = computed(() => 
+		(templatevalue.value || []).filter((d: BuilderTemplate) => {
+		if(selectedComponents.value) {
+			if (selectedComponents.value.includes(d.template_name!)) {
+				return d;
+			} else {
+				return false;
+			}
+		}else{
+			return d;
+		}
+
+			
 	}));
 
 const components = computed(() =>
 	(webComponent.data || []).filter((d: BuilderComponent) => {
-		if (selectedComponents.value.includes(d.component_name!)) {
-			return d.component_name?.toLowerCase().includes(filter.value.toLowerCase());
-		} else {
-			return false;
+		if(selectedComponents.value) {
+			if (selectedComponents.value.includes(d.component_name!)) {
+				return d.component_name?.toLowerCase().includes(filter.value.toLowerCase());
+			} else {
+				return false;
+			}
+		}else{
+			return d;
 		}
 	}));
 
+const reset = () => {
+	selectedTemplate.value = null;
+}
+
+const tags = computed(() => {
+	if (!templates.value[0]) {
+    return [];
+  }
+
+	const allTags = templates.value
+    .flatMap((template : any) => {
+      const rawTemplate = toRaw(template);
+      return rawTemplate.tags?.map((tag: any) => tag.name);
+    });
+
+	return [...new Set(allTags)];
+});
+
+const sections = computed(() => {
+	if(!selectedTemplate.value){
+		return [];
+	}
+	
+	const allsection = selectedTemplate.value.section
+	.map((section : any) => {
+	  return section.name;
+	});
+	
+	const sectionsTitle = allsection.map((section : any) => {return components.value.filter((subItem : any) => subItem.name === section)[0].component_name})	 ;
+	return [...new Set(sectionsTitle)];
+});
 
 
 
 
-const categories = ['Popular','New template','All template']
+const handleclick = (value: any) => {
 
-const handleclick = (value: string) => {
-
-    //selectedComponents.value = value;
+    selectedTemplate.value = value;
 }
 
 const setScale = async (el: HTMLElement, block: BlockOptions) => {
@@ -122,6 +190,9 @@ const setScale = async (el: HTMLElement, block: BlockOptions) => {
 
 
 const setData = (ev: DragEvent, component: BlockComponent) => {
+	if(!component.name){
+		return;
+	}
 	ev?.dataTransfer?.setData("componentName", component.name);
 };
 
