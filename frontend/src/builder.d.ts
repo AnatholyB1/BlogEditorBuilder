@@ -67,11 +67,12 @@ declare interface ComponentData {
 }
 
 declare type HashString = `#${string}`;
-
-declare type RGBString = `rgb(${number}, ${number}, ${number})`;
+declare type gradiantString = `linear-gradient(180deg, ${HashString} 9.14%, ${HashString} 80.16%)` | `radial-gradient(56.34% 56.34% at 50% 50%, ${HashString} 26.56%, ${HashString} 100%)` | `conic-gradient(from 180deg at 50% 50%, ${HashString} 95.625deg, ${HashString} 360deg)` | HashString;
+declare type RGBString = `rgb(${number}, ${number}, ${number}, ${number})`;
 
 declare type LeftSidebarTabOption = "templates" | "layers" | "components" | "ia" | "question"
 declare type RightSidebarTabOption = "Properties" | "Data" | "Settings";
+declare type RightSidebarSimpleTabOption = 'Edit' | 'Style';
 
 declare type BuilderMode = "select" | "text" | "container" | "image" | "html" | "section";
 

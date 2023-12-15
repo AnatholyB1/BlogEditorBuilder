@@ -28,7 +28,8 @@
   "meta_description",
   "meta_image",
   "set_meta_tags",
-  "canvas_position"
+  "canvas_position",
+  "color_palette"
  ],
  "fields": [
   {
@@ -143,11 +144,17 @@
    "fieldname": "canvas_position",
    "fieldtype": "JSON",
    "label": "Canvas position"
+  },
+  {
+   "default": "[]\n",
+   "fieldname": "color_palette",
+   "fieldtype": "JSON",
+   "label": "Color palette"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-11-29 11:35:12.743342",
+ "modified": "2023-12-14 09:29:02.375053",
  "modified_by": "Administrator",
  "module": "Builder",
  "name": "Builder Page",

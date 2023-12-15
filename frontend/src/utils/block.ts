@@ -56,6 +56,7 @@ class Block implements BlockOptions {
 	isChildOfComponent?: string;
 	referenceBlockId?: string;
 	isRepeaterBlock?: boolean;
+	gradient?: string;
 	constructor(options: BlockOptions) {
 		this.element = options.element;
 		this.innerHTML = options.innerHTML;
@@ -93,6 +94,11 @@ class Block implements BlockOptions {
 
 		if (this.isText() && !this.classes.includes("__text_block__")) {
 			this.classes.push("__text_block__");
+		}
+
+		const gr = this.baseStyles.background as string ?? '' ;
+		if(gr.includes('gradient')) {
+			this.gradient = gr.match(/linear|radial|conic/)![0] ;
 		}
 
 		if (this.isRoot()) {
@@ -508,6 +514,12 @@ class Block implements BlockOptions {
 	}
 	setInnerHTML(innerHTML: string) {
 		this.innerHTML = innerHTML;
+	}
+	getGradient() {
+		return this.gradient;
+	}
+	setGradient(gradient: string | undefined) {
+		this.gradient = gradient;
 	}
 	toggleVisibility() {
 		if (this.getStyle("display") === "none") {

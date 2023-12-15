@@ -28,14 +28,13 @@
 					<div
 						ref="colorSelector"
 						@mousedown.stop="handleSelectorMove"
-						class="absolute rounded-full border border-black border-opacity-20 before:absolute before:h-full before:w-full before:rounded-full before:border-2 before:border-white before:bg-[currentColor] after:absolute after:left-[2px] after:top-[2px] after:h-[calc(100%-4px)] after:w-[calc(100%-4px)] after:rounded-full after:border after:border-black after:border-opacity-20 after:bg-transparent"
+						class="absolute rounded-full drop-shadow-md"
 						:style="{
 							height: '12px',
 							width: '12px',
 							left: `calc(${colorSelectorPosition.x}px - 6px)`,
 							top: `calc(${colorSelectorPosition.y}px - 6px)`,
-							color: modelColor || '#FFF',
-							background: 'transparent',
+							backgroundColor: '#FFF',
 						} as StyleValue"></div>
 				</div>
 				<div

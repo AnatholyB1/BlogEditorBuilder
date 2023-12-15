@@ -38,4 +38,6 @@ export interface BuilderPage {
 	meta_description?: string;
 	/**	Image : Attach Image	*/
 	meta_image?: string;
+	/**	Palette color : image	*/
+	color_palette?: string;
 }

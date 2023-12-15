@@ -11,6 +11,9 @@ module.exports = {
 		"../node_modules/frappe-ui/src/components/**/*.{vue,js,ts,jsx,tsx}",
 	],
 	theme: {
+		fontFamilly:{
+			inter:'Inter'
+		},
 		extend: {
 			transitionProperty: {
 				size: "transform, border-radius",

@@ -17,7 +17,8 @@ const webPages = createListResource({
 		"dynamic_route",
 		"client_script",
 		"style",
-		"canvas_position"
+		"canvas_position",
+		"color_palette",
 	],
 	cache: "pages",
 	orderBy: "creation desc",

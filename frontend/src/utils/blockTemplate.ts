@@ -1,3 +1,6 @@
+import { reactive } from "vue";
+import Block from "./block";
+
 function getBlockTemplate(
 	type: "html" | "text" | "image" | "container" | "body" | "fit-container" | "fallback-component" | "section"
 ): BlockOptions {
@@ -69,15 +72,12 @@ function getBlockTemplate(
 			return {
 				element: "div",
 				originalElement: "body",
+				children: [reactive(new Block(getBlockTemplate("section")))],
 				attributes: {} as BlockAttributeMap,
-				editorStyles: {
-					paddingBottom: "100px",
-				} as BlockStyleMap,
 				baseStyles: {
 					display: "flex",
 					flexWrap: "wrap",
 					flexDirection: "column",
-					alignItems: "center",
 				} as BlockStyleMap,
 				blockId: "root",
 			};

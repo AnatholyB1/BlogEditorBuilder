@@ -24,7 +24,7 @@
 				:active="store.mode === mode.mode"></Button>
 		</div>
 		<div class="absolute right-3 flex items-center">
-			<Button variant='solid' class="border-0 text-xs dark:bg-zinc-800 mr-4" @click="store.showRightPanel = !store.showRightPanel">
+			<Button variant="solid"  :class="`border-0 text-xs dark:bg-zinc-800 mr-4 ${!store.showAvanced && '!bg-[#F3F3F3] !text-[#1F272E]'}`" @click="store.showAvanced = !store.showAvanced">
 				Advanced
 			</Button>
 			<UseDark v-slot="{ isDark, toggleDark }">

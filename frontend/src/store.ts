@@ -18,6 +18,7 @@ const useStore = defineStore("store", {
 			blocks: <Block[]>[reactive(new Block(getBlockTemplate("body")))],
 		},
 		settingPage: false,
+		defaultKeys: <string[]>[ 'Backspace' , 'Delete' , 'Enter' , 'Meta' , 'Shift' ,'Control' , 'Alt' , 'CapsLock' , 'Tab' , 'Escape' , 'ArrowLeft' , 'ArrowRight' , 'ArrowUp' , 'ArrowDown' , 'Home' , 'End' , 'PageUp' , 'PageDown' , 'Insert' , 'NumLock' , 'ScrollLock' , 'Pause' , 'ContextMenu' , 'PrintScreen' , 'Help' , 'Clear' , 'F1' , 'F2' , 'F3' , 'F4' , 'F5' , 'F6' , 'F7' , 'F8' , 'F9' , 'F10' , 'F11' , 'F12' , 'F13' , 'F14' , 'F15' , 'F16' , 'F17' , 'F18' , 'F19' , 'F20' , 'F21' , 'F22' , 'F23' , 'F24' , 'F25' , 'F26' , 'F27' , 'F28' , 'F29' , 'F30' , 'F31' , 'F32' , 'F33' , 'F34' , 'F35' , 'F36' , 'F37' , 'F38' , 'F39' , 'F40' , 'F41' , 'F42' , 'F43' , 'F44' ],
 		editingComponent: <string | null>null,
 		editingMode: <EditingMode>"page",
 		activeBreakpoint: "desktop",
@@ -58,7 +59,7 @@ const useStore = defineStore("store", {
 
 		}],
 		builderLayout: {
-			rightPanelWidth: 275,
+			rightPanelWidth: 267,
 			leftPanelWidth: 364,
 			scriptEditorHeight: 400,
 		},
@@ -124,6 +125,7 @@ const useStore = defineStore("store", {
 		],
 		pageName: "Home",
 		route: "/",
+		paletteColors: <string[]| null> null,
 		pastelCssColors: [
 			"#FFFFFF",
 			"#F5FFFA",
@@ -214,7 +216,9 @@ const useStore = defineStore("store", {
 		],
 		leftPanelActiveTab: <LeftSidebarTabOption>"templates",
 		rightPanelActiveTab: <RightSidebarTabOption>"Properties",
-		showRightPanel: <boolean>false,
+		rightPanelSimpleActiveTab : <RightSidebarSimpleTabOption>"Edit",
+		showRightPanel: <boolean>true,
+		showAvanced:<boolean>false,
 		showLeftPanel: <boolean>true,
 		blockEditorCanvas: {
 			scale: 0.5,
@@ -254,7 +258,7 @@ const useStore = defineStore("store", {
 				parent = this.getComponentBlock(this.editingComponent);
 			}
 			let firstBlock = this.getBlockInstance(blocks[0]);
-			if (firstBlock.isRoot() && !this.editingComponent) {
+			if (firstBlock.isRoot() ,!this.editingComponent) {
 				this.builderState.blocks = [firstBlock];
 			} else {
 				for (let block of blocks) {
@@ -262,12 +266,17 @@ const useStore = defineStore("store", {
 				}
 			}
 		},
-		newBlockSection(block : Block) {
+		newBlockSection(block ? : Block) {
 			const newblock = this.getBlockInstance(getBlockTemplate("section"));
-			const parent = this.builderState.blocks[0];
-			const currentIndex = parent.children.indexOf(block);
-			parent.children.splice(currentIndex + 1, 0, newblock);
+			if(block)
+			{
+				const currentIndex = this.builderState.blocks[0].children.indexOf(block);
+				this.builderState.blocks[0].children.splice(currentIndex + 1, 0, newblock);
+			}else{
+				this.builderState.blocks[0].children.push(newblock);
+			}
 			this.selectBlock(newblock, null);
+
 		},
 		getFirstBlock() {
 			return this.editingComponent
@@ -365,7 +374,7 @@ const useStore = defineStore("store", {
 			if (this.settingPage) {
 				return;
 			}
-			if (e && e.shiftKey) {
+			if (e ,e.shiftKey) {
 				block.toggleSelectBlock();
 			} else {
 				block.selectBlock();
@@ -437,6 +446,10 @@ const useStore = defineStore("store", {
 		getComponentBlock(componentName: string) {
 			return (this.getComponent(componentName)?.block as Block) || this.getFallbackBlock();
 		},
+		getPaletteColors() {
+			return this.getActivePage().color_palette;
+
+		},
 		getComponent(componentName: string) {
 			return webComponent.getRow(componentName) as BuilderComponent;
 		},
@@ -445,7 +458,7 @@ const useStore = defineStore("store", {
 			if (component) {
 				const existingComponent = JSON.stringify(component.block);
 				const newComponent = JSON.stringify(obj.block);
-				if (updateExisting && existingComponent !== newComponent) {
+				if (updateExisting ,existingComponent !== newComponent) {
 					return webComponent.setValue.submit({
 						name: obj.name,
 						block: obj.block,
@@ -456,6 +469,14 @@ const useStore = defineStore("store", {
 			}
 			return webComponent.insert.submit(obj).catch(() => {
 				console.log(`There was an error while creating ${obj.component_name}`);
+			});
+		},
+		updateColors(){
+			const page = this.getActivePage();
+			page.color_palette = JSON.stringify(this.paletteColors);
+			webPages.setValue.submit({
+				name: page.name,
+				color_palette: page.color_palette
 			});
 		},
 		getFallbackBlock() {
@@ -513,7 +534,7 @@ const useStore = defineStore("store", {
 				.then((res: { message: string }) => {
 					let route = res.message;
 
-					if (this.getActivePage().dynamic_route && this.pageData) {
+					if (this.getActivePage().dynamic_route ,this.pageData) {
 						const routeVariables = (route?.match(/<\w+>/g) || []).map((match: string) => match.slice(1, -1));
 						routeVariables.forEach((variable: string) => {
 							if (this.routeVariables[variable]) {

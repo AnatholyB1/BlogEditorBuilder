@@ -1,6 +1,7 @@
 import useStore from "@/store";
 import { CSSProperties } from "vue";
 import { BlockDataKey } from "./block";
+import { getGradientType } from "./helpers";
 
 const store = useStore();
 
@@ -19,7 +20,17 @@ const blockController = {
 	isSection() {
 		return blockController.isBLockSelected() && store.selectedBlocks[0].isSection();
 	},
+	setGradient: (gradient: string | undefined) => {
+		store.selectedBlocks.forEach((block) => {
+			block.setGradient(gradient);
+		});
+	},
 	setStyle: (style: styleProperty, value: StyleValue) => {
+		if (!value?.toString().startsWith("#") && style === "background") {
+			store.selectedBlocks.forEach((block) => {
+				block.setGradient(getGradientType(value as string)!);
+			});
+		}
 		store.selectedBlocks.forEach((block) => {
 			block.setStyle(style, value);
 		});
