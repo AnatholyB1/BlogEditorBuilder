@@ -275,7 +275,6 @@ const useStore = defineStore("store", {
 			}else{
 				this.builderState.blocks[0].children.push(newblock);
 			}
-			this.selectBlock(newblock, null);
 
 		},
 		getFirstBlock() {
@@ -295,6 +294,43 @@ const useStore = defineStore("store", {
 				deleteBlockId(b);
 			}
 			return this.getBlockInstance(b);
+		},
+		deleteSection(block: Block) {
+			const parent = this.findBlock('root');
+			const index = parent!.children.indexOf(block);
+			parent!.children.splice(index, 1);
+		},
+		moveSectionUp(block: Block) {
+			const parent = this.findBlock('root');
+			const index = parent!.children.indexOf(block);
+			if (index > 0) {
+				parent!.children.splice(index - 1, 0, parent!.children.splice(index, 1)[0]);
+			}
+		},
+		moveBlockDown(){
+			this.selectedBlocks.forEach((block) => {
+				const parent = this.findParentBlock(block.blockId);
+				const index = parent!.children.indexOf(block);
+				if (index > 0) {
+					parent!.children.splice(index - 1, 0, parent!.children.splice(index, 1)[0]);
+				}
+			});
+		},
+		moveBlockUp(){
+			this.selectedBlocks.forEach((block) => {
+				const parent = this.findParentBlock(block.blockId);
+				const index = parent!.children.indexOf(block);
+				if (index < parent!.children.length - 1) {
+					parent!.children.splice(index + 1, 0, parent!.children.splice(index, 1)[0]);
+				}
+			});
+		},
+		moveSectionDown(block: Block) {
+			const parent = this.findBlock('root');
+			const index = parent!.children.indexOf(block);
+			if (index < parent!.children.length - 1) {
+				parent!.children.splice(index + 1, 0, parent!.children.splice(index, 1)[0]);
+			}
 		},
 		getRootBlock() {
 			return this.getBlockInstance(getBlockTemplate("body"));

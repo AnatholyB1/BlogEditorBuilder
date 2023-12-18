@@ -50,6 +50,7 @@ class Block implements BlockOptions {
 	element?: string;
 	draggable?: boolean;
 	innerText?: string;
+	out: boolean = false;
 	innerHTML?: string;
 	extendedFromComponent?: string;
 	originalElement?: string | undefined;
@@ -106,6 +107,12 @@ class Block implements BlockOptions {
 			this.draggable = false;
 			this.setBaseStyle("minHeight", "100vh");
 		}
+	}
+	setOut(out: boolean) {
+		this.out = out;
+	}
+	isOut() {
+		return this.out;
 	}
 	getStyles(breakpoint: string = "desktop") {
 		let styleObj = {};
@@ -324,6 +331,12 @@ class Block implements BlockOptions {
 	isMovable(): boolean {
 		return this.getStyle("position") === "absolute";
 	}
+	freemove(x: number, y: number ) {
+		const store = useStore();
+		store.clearSelection();
+		this.setStyle("left", addPxToNumber(x));
+		this.setStyle("top", addPxToNumber(y));
+	}
 	move(direction: "up" | "left" | "down" | "right") {
 		if (!this.isMovable()) {
 			return;
@@ -418,6 +431,12 @@ class Block implements BlockOptions {
 	}
 	getBackgroundColor() {
 		return this.getStyle("backgroundColor") || "transparent";
+	}
+	getPosition() {
+		return {x : this.getStyle("left"), y : this.getStyle("top")};
+	}
+	getSize() {
+		return {width : this.getStyle("width"), height : this.getStyle("height")};
 	}
 	getFontFamily() {
 		const editor = this.getEditor();

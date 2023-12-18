@@ -81,7 +81,7 @@ window.blockController = blockController;
 
 const blockEditor = ref<InstanceType<typeof BuilderCanvas> | null>(null);
 const componentEditor = ref<HTMLElement | null>(null);
-
+const target = ref({x: 0, y: 0, dragging: false});
 const showPageScriptPanel = ref(false);
 const keys = useMagicKeys();
 const CtrlBacktick = keys["Ctrl+`"];
@@ -340,6 +340,39 @@ useEventListener(document, "keydown", (e) => {
 	}
 });
 
+useEventListener(document, "mousedown", (e) => {
+
+    if (e.button === 1) {
+
+        //store the mouse position
+		target.value = {x : e.screenX,y: e.screenY, dragging: true};
+		//change style of mouse cursor
+		document.body.style.cursor = "grabbing";
+		return;
+
+    }
+});
+
+useEventListener(document, "mousemove", (e) => {
+	if (target.value.dragging) {
+			//calculate the difference between the mouse position and the position of the element
+			const x = e.screenX - target.value.x;
+			const y = e.screenY - target.value.y;
+			//set the position of the element
+			blockEditor.value?.freemoveCanvas(x/3, y/3);
+				return;
+			}
+});
+
+useEventListener(document, "mouseup", (e) => {
+	if (e.button === 1) {
+		target.value.dragging = false;
+		document.body.style.cursor = "default";
+		return;
+	}
+});
+
+
 useEventListener(document, "keydown", (e) => {
 	if (e.key === "\\" && e.metaKey) {
 		e.preventDefault();
@@ -349,6 +382,22 @@ useEventListener(document, "keydown", (e) => {
 			store.showRightPanel = !store.showRightPanel;
 			store.showLeftPanel = store.showRightPanel;
 		}
+	}
+	if(e.key === "u" && (e.metaKey || e.ctrlKey)){
+		e.preventDefault();
+		if(store.selectedBlocks.length === 0){
+			return;
+		}
+		store.moveBlockUp();
+		return;
+	}
+	if(e.key === "d" && (e.metaKey || e.ctrlKey)){
+		e.preventDefault();
+		if(store.selectedBlocks.length === 0){
+			return;
+		}
+		store.moveBlockDown();
+		return;
 	}
 	// save page or component
 	if (e.key === "s" && (e.ctrlKey || e.metaKey)) {

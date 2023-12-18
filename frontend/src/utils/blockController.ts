@@ -1,7 +1,7 @@
 import useStore from "@/store";
 import { CSSProperties } from "vue";
 import { BlockDataKey } from "./block";
-import { getGradientType } from "./helpers";
+import { getGradientType, PixelToNumber } from "./helpers";
 
 const store = useStore();
 
@@ -74,6 +74,26 @@ const blockController = {
 	},
 	isInput: () => {
 		return blockController.isBLockSelected() && store.selectedBlocks[0].isInput();
+	},
+	isNotInparent: () => {
+		
+		if(store.selectedBlocks.length === 0) return false;
+		if(store.selectedBlocks[0].isRoot()) return false;
+		if(store.selectedBlocks[0].isSection()) return false;
+		const block = store.selectedBlocks[0]
+		const parent = block.getParentBlock();
+		if(PixelToNumber(block.getPosition().y as string) <= 0 || PixelToNumber(block.getPosition().x as string) <= 0) return true;
+		if(PixelToNumber(block.getPosition().y as string) >= PixelToNumber(parent!.getSize().height as string) || PixelToNumber(block.getPosition().x as string) >= PixelToNumber(parent!.getSize().width as string)) return true;
+		return false;
+	},
+	ChangeParentToUpper: () => {
+		const block = store.selectedBlocks[0];
+		const parent = block.getParentBlock();
+		if(parent!.isRoot()) return;
+		const grandParent = parent!.getParentBlock();
+		if(grandParent!.isRoot()) return;
+		grandParent!.addChild(block, grandParent!.getChildren().length);
+		parent!.removeChild(block);
 	},
 	getAttribute: (attribute: string) => {
 		let attributeValue = "__initial__" as StyleValue;

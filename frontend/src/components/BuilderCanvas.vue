@@ -210,6 +210,7 @@ const handleMouseDown = (event: MouseEvent) => {
 	if(target.id !== 'moovable') return;
 	const parent = findParentWithId(target);
 	if(parent === null) return;
+	store.clearSelection();
 	dragging.value = true;
 	// Parcourir les éléments enfants
 	const element = divs.find(value =>  value.id.value === parent.id) as Divs;
@@ -483,6 +484,11 @@ const moveCanvas = (direction: "up" | "down" | "right" | "left") => {
 	}
 };
 
+const freemoveCanvas = (x : number , y : number) => {
+	props.canvasProps.translateX += x;
+	props.canvasProps.translateY += y;
+};
+
 const zoomIn = () => {
 	props.canvasProps.scale += 0.1;
 };
@@ -494,6 +500,7 @@ const zoomOut = () => {
 defineExpose({
 	setScaleAndTranslate,
 	resetZoom,
+	freemoveCanvas,
 	moveCanvas,
 	zoomIn,
 	zoomOut,

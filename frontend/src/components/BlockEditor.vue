@@ -10,26 +10,6 @@
 			@contextmenu="onContextMenu"
 			:data-block-id="block.blockId"
 			:class="getStyleClasses">
-			<PaddingHandler
-				v-if="isBlockSelected && !resizing && !editable && !blockController.multipleBlocksSelected()"
-				:target-block="block"
-				:target="target"
-				:on-update="updateTracker"
-				:disable-handlers="false"
-				:breakpoint="breakpoint" />
-			<MarginHandler
-				v-if="
-					isBlockSelected &&
-					!block.isRoot() &&
-					!resizing &&
-					!editable &&
-					!blockController.multipleBlocksSelected()
-				"
-				:target-block="block"
-				:target="target"
-				:on-update="updateTracker"
-				:disable-handlers="false"
-				:breakpoint="breakpoint" />
 			<BorderRadiusHandler
 				v-if="
 					isBlockSelected &&
@@ -42,7 +22,24 @@
 				"
 				:target-block="block"
 				:target="target" />
+			<LeftBlockAction
+				v-if="
+					isBlockSelected &&
+					block.isSection() &&
+					block.getParentBlock()?.isRoot() == true &&
+					!block.isRoot() &&
+					!block.isText() &&
+					!block.isHTML() &&
+					!block.isSVG() &&
+					!editable &&
+					!blockController.multipleBlocksSelected()
+				"
+				:target-block="block"
+				:target="target" />
 			<BoxResizer v-if="showResizer" :targetBlock="block" @resizing="resizing = $event" :target="target" />
+			<div @click="store.newBlockSection(block)"  :class="'rounded-md py-[8px]  !absolute hover:cursor-pointer !bottom-0 !z-[99999999] !left-1/2 !origin-center !-translate-x-1/2 !translate-y-1/2 !flex !flex-row  !gap-[8px] !items-center !justify-center !h-[38px] !px-[16px] !bg-[#9033E5] '"  v-if="block.getTag() === 'section' && block.getParentBlock()?.isRoot() == true ">
+				<Plus class="w-[16px] h-[16px] stroke-1 text-[#FAFAFA] " /><span class="text-[#FAFAFA] text-inter text-[14px] font-[600] leading-[20px]">Section</span>
+			</div>
 		</div>
 	</BlockContextMenu>
 </template>
@@ -50,7 +47,7 @@
 import Block from "@/utils/block";
 import { addPxToNumber } from "@/utils/helpers";
 import { Ref, computed, inject, nextTick, onMounted, popScopeId, ref, watch, watchEffect } from "vue";
-
+import LeftBlockAction from "./LeftBlockAction.vue";
 import blockController from "@/utils/blockController";
 import useStore from "../store";
 import setGuides from "../utils/guidesTracker";
@@ -58,8 +55,7 @@ import trackTarget from "../utils/trackTarget";
 import BlockContextMenu from "./BlockContextMenu.vue";
 import BorderRadiusHandler from "./BorderRadiusHandler.vue";
 import BoxResizer from "./BoxResizer.vue";
-import MarginHandler from "./MarginHandler.vue";
-import PaddingHandler from "./PaddingHandler.vue";
+import { Plus } from 'lucide-vue-next';
 
 const out = ref(false);
 const canvasProps = inject("canvasProps") as CanvasProps;
@@ -97,7 +93,7 @@ const store = useStore();
 const editor = ref(null) as unknown as Ref<HTMLElement>;
 const updateTracker = ref(() => {});
 const resizing = ref(false);
-const guides = setGuides(props.target, canvasProps);
+const guides = setGuides(props.target , canvasProps);
 const moving = ref(false);
 const preventCLick = ref(false);
 
@@ -118,7 +114,7 @@ watchEffect(() => {
 	store.showRightPanel;
 	store.showLeftPanel;
 	store.activeBreakpoint;
-	store.deviceBreakpoints.map((bp) => bp.visible);
+	store.deviceBreakpoints.map((bp : any) => bp.visible);
 	nextTick(() => {
 		updateTracker.value();
 	});
@@ -136,7 +132,7 @@ const getStyleClasses = computed(() => {
 	if (Boolean(props.block.extendedFromComponent)) {
 		classes.push("ring-purple-400");
 	} else {
-		classes.push("ring-blue-400");
+		classes.push("ring-[#9033E5]");
 	}
 	if (
 		props.block.isSelected() &&
@@ -186,6 +182,8 @@ const handleClick = (ev: MouseEvent) => {
 	}
 };
 
+
+
 // dispatch drop event to the target block
 const handleDrop = (ev: DragEvent) => {
 	if (props.editable) return;
@@ -208,7 +206,7 @@ const handleMove = (ev: MouseEvent) => {
 	const target = ev.target as HTMLElement;
 	const startX = ev.clientX;
 	const startY = ev.clientY;
-	const startLeft = props.target.offsetLeft;
+	const startLeft = props.target.offsetLeft ;
 	const startTop = props.target.offsetTop;
 	
 	moving.value = true;
@@ -219,46 +217,78 @@ const handleMove = (ev: MouseEvent) => {
 	document.body.style.cursor = window.getComputedStyle(target).cursor;
 
 	const rootElement = document.getElementById(store.activeBreakpoint)
-
-	function appendToTeleport(blockId : string, ) {
-		const teleport = document.querySelectorAll<HTMLElement>((`[data-block-id="${blockId}"]`)) 
-		teleport[0].appendChild(teleport[1].cloneNode(true))
-		const style = ["!block" ,"!grid" ,"!place-items-center", "!w-full", "!h-full" ,"!bg-white", "!shadow-sm", "!static", "!text-lg"]
-		style.forEach((c) => {
-			teleport[0].lastElementChild!.classList.add(c)
-		})
-	}
-
-	function removeToTeleport(blockId : string, ) {
-		const teleport = document.querySelectorAll<HTMLElement>((`[data-block-id="${blockId}"]`))
-		teleport[0].removeChild(teleport[0].lastElementChild!);
-		console.log(teleport)
-	}
-
-	function handleElementExit(eX : number, eY : number ) {
-	const { left, top, bottom, right } = rootElement!.getBoundingClientRect();
-	const elementLeft = eX - left;
-	const elementRight = eX - right;
-	const elementTop = eY - top;
-	const elementBottom = eY - bottom;
-
+	let observer: MutationObserver | null = null;
 	
+	function handleElementExit(eX : number, eY : number ) {
+		const { left, top, bottom, right } = rootElement!.getBoundingClientRect();
+		const elementLeft = eX - left;
+		const elementRight = eX - right;
+		const elementTop = eY - top;
+		const elementBottom = eY - bottom;
 
-	if (elementLeft < 0 || elementRight > 0 || elementTop < 0 || elementBottom > 0) {
-		if( out.value) return
-		out.value = true;
-		appendToTeleport(props.block.blockId)
-
-	}else if(out.value){
 		
-		removeToTeleport(props.block.blockId)
-		out.value = false;
-	}
+
+		if (elementLeft < 0 || elementRight > 0 || elementTop < 0 || elementBottom > 0) {
+			if( out.value) return
+			out.value = true;
+			props.block.setOut(true)
+			// Get the first element with data-custom-attribute="value"
+			let element = document.querySelectorAll(`[data-block-id="${props.block.blockId}"]`);
+			let propertiesToCopy = ['width', 'height', 'position', 'zIndex', 'top', 'left'];
+			const childs = 	[] as Node[]		
+			for (let child of element[1].children) {
+					childs.push(child.cloneNode(true));
+				}
+				console.log(childs)
+
+			setTimeout(() => {
+				let outElement = document.getElementById(`${props.block.blockId}-overlay`)
+				if(!outElement || element.length < 2) return
+						// Function to update styles and append children
+				function updateElement() {
+					if(!outElement || element.length < 2) return
+					let computedStyleEditor = window.getComputedStyle(element[0]);
+					let computedStyleBlock = window.getComputedStyle(element[1]);
+
+					for (let property of computedStyleBlock) {
+						outElement.style[property as any] = computedStyleBlock.getPropertyValue(property);
+					}
+
+					for (let property of propertiesToCopy) {
+						outElement.style[property as any] = computedStyleEditor.getPropertyValue(property);
+					}
+
+					for (let child of childs) {
+						outElement.appendChild(child.cloneNode(true));
+					}
+				}
+				// Create a MutationObserver instance
+				observer = new MutationObserver(updateElement);
+				// Start observing the target node for configured mutations
+				observer.observe(element[1], { childList: true , subtree: true });
+				observer.observe(element[0], { attributes: true });
+				updateElement();
+			}, 50);
+
+
+			
+
+		}else if(out.value){
+			// Disconnect the observer when out.value is true
+			if (observer ) {
+
+				observer.disconnect();
+				observer = null;
+			}
+			props.block.setOut(false)
+			out.value = false;
+		}
 
 
 	}
 
 	const mousemove = async (mouseMoveEvent: MouseEvent) => {
+		
 		const scale = canvasProps.scale;
 		const movementX = (mouseMoveEvent.clientX - startX) / scale;
 		const movementY = (mouseMoveEvent.clientY - startY) / scale;
@@ -268,6 +298,10 @@ const handleMove = (ev: MouseEvent) => {
 		await nextTick();
 		const { leftOffset, rightOffset } = guides.getPositionOffset();
 		handleElementExit(mouseMoveEvent.clientX, mouseMoveEvent.clientY)
+		if(blockController.isNotInparent())
+		{
+			blockController.ChangeParentToUpper()
+		}
 		if (leftOffset !== 0) {
 			props.block.setStyle("left", addPxToNumber(finalLeft + leftOffset));
 			

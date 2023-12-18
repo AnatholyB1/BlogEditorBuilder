@@ -19,17 +19,22 @@
 			:preview="preview"
 			:isChildOfComponent="block.isExtendedFromComponent() || isChildOfComponent"
 			:key="child.blockId"
+			v-if="!block.isOut()"
 			v-for="child in block.getChildren()" />
-		<Button @click="addBlankSection"  class="absolute bottom-0 z-[99999999] left-1/2 origin-center -translate-x-1/2 translate-y-1/2"  v-if="block.getTag() === 'section' && block.getParentBlock()?.isRoot() == true ">Add Section</Button>
 	</component>
 	<teleport  to="#overlay" v-if="canvasProps?.overlayElement && !preview && canvasProps">
-		<BlockEditor
-			ref="editor"
-			v-if="loadEditor"
-			:block="block"
-			:breakpoint="breakpoint"
-			:editable="isEditable"
-			:target="(target as HTMLElement)" />
+			<div
+				@click.stop="() => {props.block.selectBlock();}"
+				:id="props.block.blockId + '-overlay'"
+				v-if="block.isOut()" />
+			<BlockEditor
+				ref="editor"
+				v-if="loadEditor"
+				:block="block"
+				:breakpoint="breakpoint"
+				:editable="isEditable"
+				:target="(target as HTMLElement)" >		
+			</BlockEditor>
 	</teleport>
 </template>
 <script setup lang="ts">
@@ -74,9 +79,6 @@ const props = defineProps({
 	},
 });
 
-const addBlankSection = () => {
-	store.newBlockSection(props.block);
-};
 
 
 const draggable = computed(() => {

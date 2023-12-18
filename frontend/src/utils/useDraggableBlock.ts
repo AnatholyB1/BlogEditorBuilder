@@ -26,6 +26,7 @@ export function useDraggableBlock(block: Block, target: HTMLElement, options: { 
 	};
 
 	const handleDrag = (e: DragEvent) => {
+		console.log("dragging");
 		const target = e.target as HTMLElement;
 		ghostElement = ghostElement as HTMLElement;
 		ghostElement.style.left = e.clientX - target.offsetWidth / 2 + "px";

@@ -18,6 +18,7 @@ function trackTarget(target: HTMLElement | SVGElement, host: HTMLElement, canvas
 	updateList.push(targetBounds.update);
 	watch(canvasProps, () => nextTick(targetBounds.update), { deep: true });
 
+
 	if (!window.observer) {
 		let callback = () => {
 			nextTick(() => {

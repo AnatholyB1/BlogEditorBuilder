@@ -12,6 +12,10 @@ function addPxToNumber(number: number, round: boolean = true): string {
 	number = round ? Math.round(number) : number;
 	return `${number}px`;
 }
+function PixelToNumber(px : string | number) {
+	if(typeof px === 'number')return px;
+	return Number(px.replace("px", ""));
+}
 
 function HexToHSV(color: HashString): { h: number; s: number; v: number, a:number } {
 	const [r, g, b, a] = color
@@ -277,6 +281,7 @@ function getDataForKey(datum: Object, key: string) {
 }
 
 export {
+	PixelToNumber,
 	validateColor,
 	validateOpacity,
 	isColorDark,

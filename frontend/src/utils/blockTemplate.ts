@@ -12,12 +12,9 @@ function getBlockTemplate(
 					element: "section",
 					attributes: {} as BlockAttributeMap,
 					baseStyles: {
-						display: "flex",
-						flexDirection: "column",
-						position: "static",
+						position: "relative",
 						height: "100vh",
 						width: "100%",
-						alignItems: "center",
 					} as BlockStyleMap,
 				};
 			}
@@ -28,6 +25,7 @@ function getBlockTemplate(
 				originalElement: "__raw_html__",
 				innerHTML: `<div style="color: #8e8e8e;background: #f4f4f4;display:flex;flex-direction:column;position:absolute;top:auto;left:auto;width: 200px;height: 155px;align-items:center;font-size:18px;justify-content:center"><p>&lt;paste html&gt;</p></div>`,
 				baseStyles: {
+					position: "absolute",
 					height: "fit-content",
 					width: "fit-content",
 				} as BlockStyleMap,
@@ -64,8 +62,6 @@ function getBlockTemplate(
 				blockName: "container",
 				baseStyles: {
 					position: "absolute",
-					display: "flex",
-					flexDirection: "column",
 				} as BlockStyleMap,
 			};
 		case "body":
@@ -90,8 +86,6 @@ function getBlockTemplate(
 				blockName: "container",
 				baseStyles: {
 					position: "absolute",
-					display: "flex",
-					flexDirection: "column",
 					height: "fit-content",
 					width: "fit-content",
 				} as BlockStyleMap,
