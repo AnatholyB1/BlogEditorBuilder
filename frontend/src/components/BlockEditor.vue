@@ -239,7 +239,6 @@ const handleMove = (ev: MouseEvent) => {
 			for (let child of element[1].children) {
 					childs.push(child.cloneNode(true));
 				}
-				console.log(childs)
 
 			setTimeout(() => {
 				let outElement = document.getElementById(`${props.block.blockId}-overlay`)

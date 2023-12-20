@@ -1,7 +1,8 @@
 import useStore from "@/store";
 import { CSSProperties } from "vue";
 import { BlockDataKey } from "./block";
-import { getGradientType, PixelToNumber } from "./helpers";
+import { addPxToNumber, getGradientType, PixelToNumber, smoothTransition } from "./helpers";
+import Block from "./block";
 
 const store = useStore();
 
@@ -81,19 +82,38 @@ const blockController = {
 		if(store.selectedBlocks[0].isRoot()) return false;
 		if(store.selectedBlocks[0].isSection()) return false;
 		const block = store.selectedBlocks[0]
+		const Size = block.getRealSize();
 		const parent = block.getParentBlock();
-		if(PixelToNumber(block.getPosition().y as string) <= 0 || PixelToNumber(block.getPosition().x as string) <= 0) return true;
-		if(PixelToNumber(block.getPosition().y as string) >= PixelToNumber(parent!.getSize().height as string) || PixelToNumber(block.getPosition().x as string) >= PixelToNumber(parent!.getSize().width as string)) return true;
+		if(PixelToNumber(block.getPosition().y as string )  + Size.height <= 0 || PixelToNumber(block.getPosition().x  as string  ) + Size.width  <= 0) return true;
+		if(PixelToNumber(block.getPosition().y as string  )  >= parent!.getRealSize().height  || PixelToNumber(block.getPosition().x as string)  >= parent!.getRealSize().width ) return true;
 		return false;
 	},
 	ChangeParentToUpper: () => {
 		const block = store.selectedBlocks[0];
-		const parent = block.getParentBlock();
-		if(parent!.isRoot()) return;
-		const grandParent = parent!.getParentBlock();
-		if(grandParent!.isRoot()) return;
-		grandParent!.addChild(block, grandParent!.getChildren().length);
-		parent!.removeChild(block);
+		const parent = store.selectedBlocks[0].getParentBlock();
+		if(parent!.isRoot() || parent === null) return;
+		const grandParent = parent.getParentBlock();
+		if(grandParent!.isRoot() || grandParent === null) return;
+		const {x , y } = smoothTransition(parent, store.selectedBlocks[0]);
+		const newBlock = grandParent!.addChild(store.selectedBlocks[0], grandParent!.getChildren().length);
+		setTimeout(() => {
+			parent.removeChild(block);
+			const element = document.querySelectorAll(`[data-block-id="${store.selectedBlocks[0].blockId}"]`);
+			element.forEach((el) => {
+				const ht = el as HTMLElement;
+				if (ht){
+					console.log(x,y , ht.style.top, ht.style.left)
+					ht.style.top = `${addPxToNumber(y)}!important`;
+					ht.style.left = `${addPxToNumber(x)}!important`;
+					console.log(ht instanceof HTMLElement);
+					console.log(addPxToNumber(x), addPxToNumber(y))
+				}
+
+			});
+			
+		}, 0);
+	},
+	ChangeParentToLower: (target : Block) => {
 	},
 	getAttribute: (attribute: string) => {
 		let attributeValue = "__initial__" as StyleValue;

@@ -1,3 +1,6 @@
+import useStore from "@/store";
+import Block from "./block";
+
 function getNumberFromPx(px: string | number | null | undefined): number {
 	if (!px) {
 		return 0;
@@ -8,6 +11,15 @@ function getNumberFromPx(px: string | number | null | undefined): number {
 	return Number(px.replace("px", ""));
 }
 
+function smoothTransition(parent : Block, children : Block)
+{
+	const parentPosition = parent.getPosition();
+	const childrenPosition = children.getPosition();
+
+
+	return {x : PixelToNumber(childrenPosition.x as string) + PixelToNumber(parentPosition.x as string), y :PixelToNumber(childrenPosition.y as string) + PixelToNumber(parentPosition.y as string)};
+}
+
 function addPxToNumber(number: number, round: boolean = true): string {
 	number = round ? Math.round(number) : number;
 	return `${number}px`;
@@ -15,6 +27,17 @@ function addPxToNumber(number: number, round: boolean = true): string {
 function PixelToNumber(px : string | number) {
 	if(typeof px === 'number')return px;
 	return Number(px.replace("px", ""));
+}
+
+function PixelAfterZoom(px : string | number)
+{
+	const store = useStore()
+	store.blockEditorCanvas.scale;
+	if(typeof px === 'number') {
+		return px * store.blockEditorCanvas.scale;
+	}else{
+		return Number(px.replace("px", "")) * store.blockEditorCanvas.scale;
+	}
 }
 
 function HexToHSV(color: HashString): { h: number; s: number; v: number, a:number } {
@@ -132,7 +155,7 @@ function getRGB(color: HashString | RGBString | string | null): HashString | nul
 		}
 		return `#${color}` as HashString;
 	}
-	return '#FFFFFFFF' as HashString;
+	return null;
 }
 
 function updateOpacityInHex(color: HashString, opacity: number) {
@@ -281,6 +304,7 @@ function getDataForKey(datum: Object, key: string) {
 }
 
 export {
+	PixelAfterZoom,
 	PixelToNumber,
 	validateColor,
 	validateOpacity,
@@ -296,6 +320,7 @@ export {
 	RGBToHex,
 	addPxToNumber,
 	confirm,
+	smoothTransition,
 	copyToClipboard,
 	findNearestSiblingIndex,
 	getDataForKey,

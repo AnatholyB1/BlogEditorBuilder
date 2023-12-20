@@ -335,7 +335,8 @@ const modelImage = computed(() => {
 })
 
 const modelColor = computed(() => {
-	if(props.modelValue!.startsWith('#')) 
+	if(!props.modelValue) return null;
+	if(props.modelValue.startsWith('#')) 
 	{
 		setSelectorPosition(getRGB(props.modelValue)); 
 		return getRGB(props.modelValue)

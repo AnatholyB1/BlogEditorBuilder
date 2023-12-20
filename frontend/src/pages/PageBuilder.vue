@@ -383,7 +383,7 @@ useEventListener(document, "keydown", (e) => {
 			store.showLeftPanel = store.showRightPanel;
 		}
 	}
-	if(e.key === "u" && (e.metaKey || e.ctrlKey)){
+	if(e.key === "]" ){
 		e.preventDefault();
 		if(store.selectedBlocks.length === 0){
 			return;
@@ -391,7 +391,7 @@ useEventListener(document, "keydown", (e) => {
 		store.moveBlockUp();
 		return;
 	}
-	if(e.key === "d" && (e.metaKey || e.ctrlKey)){
+	if(e.key === "[" ){
 		e.preventDefault();
 		if(store.selectedBlocks.length === 0){
 			return;

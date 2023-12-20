@@ -2,7 +2,7 @@ import useStore from "@/store";
 import { Editor } from "@tiptap/vue-3";
 import { clamp } from "@vueuse/core";
 import { CSSProperties, nextTick, reactive } from "vue";
-import { addPxToNumber, getNumberFromPx, getTextContent, kebabToCamelCase } from "./helpers";
+import { PixelAfterZoom, addPxToNumber, getNumberFromPx, getTextContent, kebabToCamelCase } from "./helpers";
 
 export type styleProperty = keyof CSSProperties;
 
@@ -371,6 +371,10 @@ class Block implements BlockOptions {
 		}
 		return childBlock;
 	}
+	setPosition(x: number, y: number) {
+		this.setStyle("left", addPxToNumber(x));
+		this.setStyle("top", addPxToNumber(y));
+	}
 	removeChild(child: Block) {
 		const index = this.getChildIndex(child);
 		if (index > -1) {
@@ -437,6 +441,12 @@ class Block implements BlockOptions {
 	}
 	getSize() {
 		return {width : this.getStyle("width"), height : this.getStyle("height")};
+	}
+	getRealSize() {
+		
+		const element = document.querySelector(`[data-block-id="${this.blockId}"]`);
+		if(!element) return {width : 0, height : 0};
+		return {width : PixelAfterZoom( element.clientWidth), height : PixelAfterZoom(element.clientHeight)};
 	}
 	getFontFamily() {
 		const editor = this.getEditor();
